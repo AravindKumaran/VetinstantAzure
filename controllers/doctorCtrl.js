@@ -54,10 +54,10 @@ exports.getAllDoctors = async (req, res, next) => {
 
 exports.getSingleDoctor = async (req, res, next) => {
   let query = Doctor.findOne({
-    _id: req.params.id,
+    user: req.params.id,
   }).populate({
     path: 'user',
-    select: 'name isOnline',
+    select: 'name emailID isOnline',
   })
 
   const doctor = await query

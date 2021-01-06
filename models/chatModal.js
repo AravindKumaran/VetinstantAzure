@@ -1,0 +1,32 @@
+const mongoose = require('mongoose')
+
+const chatSchema = new mongoose.Schema({
+  _id: {
+    type: String,
+    required: true,
+  },
+  text: {
+    type: String,
+    required: [true, 'Please enter text'],
+  },
+  createdAt: {
+    type: Date,
+    required: true,
+  },
+  user: {
+    _id: {
+      type: String,
+      required: true,
+    },
+    name: {
+      type: String,
+      required: true,
+    },
+  },
+  roomName: {
+    type: String,
+    required: [true, 'Please enter room name'],
+  },
+})
+
+module.exports = mongoose.model('Chat', chatSchema)

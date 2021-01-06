@@ -11,27 +11,36 @@ exports.getAllUsers = async (req, res, next) => {
 }
 
 exports.getMe = async (req, res, next) => {
-  let user
-  if (req.user.role === 'doctor') {
-    user = await User.findByIdAndUpdate(
-      req.user._id,
-      { isOnline: true },
-      { new: true }
-    )
-  } else {
-    user = req.user
-  }
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    { isOnline: true },
+    { new: true }
+  )
+
   res.status(200).json({
     status: 'success',
     user,
   })
 }
 
+exports.userOffline = async (req, res, next) => {
+  const user = await User.findByIdAndUpdate(
+    req.params.id,
+    { isOnline: false },
+    { new: true }
+  )
+
+  if (!user) {
+    return next(new AppError('User not found', 404))
+  }
+
+  res.status(200).json({
+    status: 'success',
+  })
+}
+
 exports.saveVet = async (req, res, next) => {
   const { hospitalId, doctorId } = req.body
-  // if(!hospitalId || doctorId){
-  //   return next(new AppError('Please provide hospitalId,'))
-  // }
 
   if (hospitalId && doctorId) {
     const user = await User.findByIdAndUpdate(
@@ -42,11 +51,6 @@ exports.saveVet = async (req, res, next) => {
       },
       { new: true }
     )
-
-    // if (!user) {
-    //   return next(new AppError('Error in updating!', 400))
-    // }
-
     res.status(200).json({
       status: 'success',
       user,
