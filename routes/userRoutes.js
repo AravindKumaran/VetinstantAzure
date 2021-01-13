@@ -5,6 +5,8 @@ const {
   getMe,
   saveVet,
   userOffline,
+  payDoctor,
+  verifyPayment,
 } = require('../controllers/userCtrl')
 
 const { protect, authorize } = require('../middleware/protect')
@@ -14,5 +16,8 @@ router.patch('/me', protect, getMe)
 
 router.patch('/updateVet', protect, saveVet)
 router.patch('/userOffline/:id', userOffline)
+
+router.post('/paydoctor', protect, authorize('user'), payDoctor)
+router.post('/verifyPayment', protect, authorize('user'), verifyPayment)
 
 module.exports = router

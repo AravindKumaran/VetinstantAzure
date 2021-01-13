@@ -118,21 +118,19 @@ exports.saveDoctorDetail = async (req, res, next) => {
 }
 
 exports.getOnlineAvailableDoctors = async (req, res, next) => {
-  const doctors = await Doctor.find({})
-    .select('phone')
-    .populate([
-      {
-        path: 'user',
-        select: 'name isOnline',
-        match: {
-          isOnline: true,
-        },
+  const doctors = await Doctor.find({}).populate([
+    {
+      path: 'user',
+      select: 'name isOnline',
+      match: {
+        isOnline: true,
       },
-      {
-        path: 'hospital',
-        select: 'name',
-      },
-    ])
+    },
+    {
+      path: 'hospital',
+      select: 'name',
+    },
+  ])
 
   res.status(200).json({
     status: 'success',

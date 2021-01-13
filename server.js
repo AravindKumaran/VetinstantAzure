@@ -8,6 +8,7 @@ const path = require('path')
 const http = require('http')
 const socketio = require('socket.io')
 const axios = require('axios')
+const twilio = require('twilio')
 
 const app = express()
 
@@ -87,6 +88,34 @@ app.use('/api/v1/doctors', require('./routes/doctorRoutes'))
 app.use('/api/v1/hospitals', require('./routes/hospitalRoutes'))
 app.use('/api/v1/rooms', require('./routes/roomRoutes'))
 app.use('/api/v1/chats', require('./routes/chatRoutes'))
+
+const AccessToken = twilio.jwt.AccessToken
+const VideoGrant = AccessToken.VideoGrant
+
+app.get('/api/v1/users/getToken', (req, res) => {
+  if (!req.query || !req.query.userName) {
+    return res.status(400).send('Username parameter is required')
+  }
+  const accessToken = new AccessToken(
+    process.env.TWILIO_ACCOUNT_SID,
+    process.env.TWILIO_KEY_SID,
+    process.env.TWILIO_KEY_SECRET
+  )
+
+  // Set the Identity of this token
+  accessToken.identity = req.query.userName
+
+  // Grant access to Video
+  const grant = new VideoGrant({
+    room: 'home',
+  })
+  accessToken.addGrant(grant)
+
+  // Serialize the token as a JWT
+  const jwt = accessToken.toJwt()
+  console.log(accessToken, jwt)
+  return res.send(jwt)
+})
 
 app.use(errorMid)
 
