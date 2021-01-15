@@ -3,6 +3,9 @@ const AppError = require('../utils/AppError')
 const Razorpay = require('razorpay')
 const { nanoid } = require('nanoid')
 const crypto = require('crypto')
+const twilio = require('twilio')
+const AccessToken = twilio.jwt.AccessToken
+const VideoGrant = AccessToken.VideoGrant
 
 let rzp = new Razorpay({
   key_id: `${process.env.KEY_ID}`,
@@ -132,4 +135,29 @@ exports.verifyPayment = async (req, res, next) => {
     status: 'success',
     verify: expectedSign === sign,
   })
+}
+
+exports.getVideoToken = async (req, res, next) => {
+  if (!req.query || !req.query.userName) {
+    return res.status(400).send('Username parameter is required')
+  }
+  const accessToken = new AccessToken(
+    process.env.TWILIO_ACCOUNT_SID,
+    process.env.TWILIO_KEY_SID,
+    process.env.TWILIO_KEY_SECRET
+  )
+
+  // Set the Identity of this token
+  accessToken.identity = req.query.userName
+
+  // Grant access to Video
+  const grant = new VideoGrant({
+    room: 'home',
+  })
+  accessToken.addGrant(grant)
+
+  // Serialize the token as a JWT
+  const jwt = accessToken.toJwt()
+  // console.log(accessToken, jwt)
+  return res.send(jwt)
 }

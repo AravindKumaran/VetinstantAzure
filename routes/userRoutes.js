@@ -7,6 +7,7 @@ const {
   userOffline,
   payDoctor,
   verifyPayment,
+  getVideoToken,
 } = require('../controllers/userCtrl')
 
 const { protect, authorize } = require('../middleware/protect')
@@ -19,5 +20,7 @@ router.patch('/userOffline/:id', userOffline)
 
 router.post('/paydoctor', protect, authorize('user'), payDoctor)
 router.post('/verifyPayment', protect, authorize('user'), verifyPayment)
+
+router.get('/getToken', protect, getVideoToken)
 
 module.exports = router
