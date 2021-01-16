@@ -13,6 +13,7 @@ const errorMid = (err, req, res, next) => {
 
   //   Mongoose Bad Object
   if (err.name === 'CastError') {
+    console.log(err)
     const message = `Resource not found `
     error = new AppError(message, 404)
   }

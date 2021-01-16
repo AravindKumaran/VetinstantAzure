@@ -27,6 +27,10 @@ const chatSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please enter room name'],
   },
+  petId: {
+    type: String,
+    required: [true, 'Please enter pet id'],
+  },
 })
 
 module.exports = mongoose.model('Chat', chatSchema)

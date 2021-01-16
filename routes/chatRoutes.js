@@ -7,6 +7,6 @@ router.use(protect)
 
 router.post('/', saveChat)
 
-router.get('/room/:name', getRoomsChat)
+router.get('/room/:name/:petid', getRoomsChat)
 
 module.exports = router

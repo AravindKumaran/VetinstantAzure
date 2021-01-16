@@ -98,3 +98,29 @@ exports.petProblems = async (req, res, next) => {
     pet,
   })
 }
+exports.petPrescription = async (req, res, next) => {
+  if (req.file) {
+    req.body.img = req.file.filename
+  }
+  const bodyPrescription = {
+    prescription: req.body.prescription,
+    img: req.body.img || null,
+    docname: req.body.docname,
+  }
+  // const pet = await Pet.findById(req.params.id)
+  const pet = await Pet.findByIdAndUpdate(
+    req.params.id,
+    {
+      $push: { prescriptions: bodyPrescription },
+    },
+    { new: true, runValidators: true }
+  )
+
+  if (!pet) {
+    return next(new AppError('Pet not found', 404))
+  }
+  res.status(200).json({
+    status: 'success',
+    pet,
+  })
+}

@@ -21,6 +21,18 @@ exports.getAllUsers = async (req, res, next) => {
   })
 }
 
+exports.getUsersByDoctorId = async (req, res, next) => {
+  const { doctorId } = req.params
+  const users = await User.find({ doctorId, role: 'user' }).select(
+    '_id name emailID'
+  )
+  res.status(200).json({
+    status: 'success',
+    count: users.length,
+    users,
+  })
+}
+
 exports.getMe = async (req, res, next) => {
   const user = await User.findByIdAndUpdate(
     req.user._id,

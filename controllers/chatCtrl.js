@@ -10,9 +10,10 @@ exports.saveChat = async (req, res, next) => {
 }
 
 exports.getRoomsChat = async (req, res, next) => {
-  const chats = await Chat.find({ roomName: req.params.name }).sort(
-    '-createdAt'
-  )
+  const chats = await Chat.find({
+    roomName: req.params.name,
+    petId: req.params.petid,
+  }).sort('-createdAt')
 
   res.status(200).json({
     status: 'success',

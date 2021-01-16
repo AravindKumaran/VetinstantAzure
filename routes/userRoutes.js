@@ -8,12 +8,19 @@ const {
   payDoctor,
   verifyPayment,
   getVideoToken,
+  getUsersByDoctorId,
 } = require('../controllers/userCtrl')
 
 const { protect, authorize } = require('../middleware/protect')
 
 router.get('/', protect, authorize('admin'), getAllUsers)
 router.patch('/me', protect, getMe)
+router.get(
+  '/doctors/:doctorId',
+  protect,
+  authorize('doctor'),
+  getUsersByDoctorId
+)
 
 router.patch('/updateVet', protect, saveVet)
 router.patch('/userOffline/:id', userOffline)

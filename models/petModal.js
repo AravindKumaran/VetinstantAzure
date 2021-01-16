@@ -55,6 +55,23 @@ const petSchema = new mongoose.Schema(
         },
       },
     ],
+    prescriptions: [
+      {
+        prescription: {
+          type: String,
+          required: [true, 'Please tell your pet prescription'],
+        },
+        img: { type: String },
+        docname: {
+          type: String,
+          required: [true, 'Please enter your doctor name'],
+        },
+        date: {
+          type: Date,
+          default: new Date(),
+        },
+      },
+    ],
     owner: {
       type: mongoose.Schema.ObjectId,
       required: [true, 'Pet must have a owner'],

@@ -13,6 +13,10 @@ const roomSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please enter receiver id'],
   },
+  petId: {
+    type: String,
+    required: [true, 'Please enter pet id'],
+  },
 })
 
 module.exports = mongoose.model('Room', roomSchema)
