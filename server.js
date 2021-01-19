@@ -51,15 +51,6 @@ io.on('connection', function (socket) {
     io.to(room).emit('chat', msg)
   })
 
-  socket.on('callStart', (data) => {
-    console.log('Call Start', data)
-  })
-  socket.emit('pickCall', onlineUsers)
-
-  socket.on('callEnd', (data) => {
-    console.log('Call End', data)
-  })
-
   socket.on('disconnect', async () => {
     try {
       const index = listOfUsers.findIndex((user) => user.id === socket.id)
@@ -96,6 +87,7 @@ app.use('/api/v1/doctors', require('./routes/doctorRoutes'))
 app.use('/api/v1/hospitals', require('./routes/hospitalRoutes'))
 app.use('/api/v1/rooms', require('./routes/roomRoutes'))
 app.use('/api/v1/chats', require('./routes/chatRoutes'))
+app.use('/api/v1/calllogs', require('./routes/callLogRoutes'))
 
 app.use(errorMid)
 
