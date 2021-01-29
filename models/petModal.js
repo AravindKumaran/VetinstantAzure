@@ -30,7 +30,11 @@ const petSchema = new mongoose.Schema(
         message: 'Gender is either: male or female',
       },
     },
-    age: {
+    years: {
+      type: Number,
+      default: 0,
+    },
+    months: {
       type: Number,
       default: 0,
     },
@@ -38,17 +42,14 @@ const petSchema = new mongoose.Schema(
       type: Number,
       default: 1,
     },
-    notes: {
-      type: String,
-      maxlength: 1024,
-    },
+    petHistoryImages: [],
     problems: [
       {
         problem: {
           type: String,
           required: [true, 'Please tell your pet problem'],
         },
-        img: { type: String },
+        images: [],
         docname: {
           type: String,
           required: [true, 'Please enter your doc name'],

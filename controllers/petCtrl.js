@@ -2,6 +2,9 @@ const Pet = require('../models/petModal')
 const AppError = require('../utils/AppError')
 const multer = require('multer')
 const sharp = require('sharp')
+const { nanoid } = require('nanoid')
+const fs = require('fs')
+const path = require('path')
 
 const multerStorage = multer.memoryStorage()
 
@@ -11,6 +14,11 @@ const upload = multer({
 })
 
 exports.uploadPetPhoto = upload.single('photo')
+// exports.uploadMultiplePhoto = upload.array('images')
+exports.uploadMultiplePhoto = upload.fields([
+  { name: 'photo', maxCount: 1 },
+  { name: 'images' },
+])
 exports.resizePhoto = (req, res, next) => {
   if (!req.file) return next()
 
@@ -20,15 +28,51 @@ exports.resizePhoto = (req, res, next) => {
     )
   }
 
-  req.file.filename = `img/pet-${Date.now()}.jpeg`
+  req.file.filename = `img/pet-${nanoid()}.jpeg`
 
   sharp(req.file.buffer)
-    .resize(250, 250)
+    .resize(500, 500)
     .toFormat('jpeg')
     .jpeg({
       quality: 90,
     })
     .toFile(`public/uploads/${req.file.filename}`)
+
+  next()
+}
+
+exports.resizeMultiplePhoto = (req, res, next) => {
+  if (!req.files) return next()
+
+  let values = []
+  if (req.files.images) {
+    values = Object.values(req.files.images)
+  }
+
+  if (req.files.photo) {
+    values.push(req.files.photo[0])
+  }
+
+  if (!values) return next()
+
+  for (let i = 0; i < values.length; i++) {
+    if (!values[i].mimetype.startsWith('image') || values[i].size > 1000000) {
+      return next(
+        new AppError('Please select an image with size less than 1mb', 400)
+      )
+    }
+  }
+
+  for (let i = 0; i < values.length; i++) {
+    values[i].filename = `img/pet-${nanoid()}.jpeg`
+    sharp(values[i].buffer)
+      .resize(500, 500)
+      .toFormat('jpeg')
+      .jpeg({
+        quality: 90,
+      })
+      .toFile(`public/uploads/${values[i].filename}`)
+  }
 
   next()
 }
@@ -59,11 +103,19 @@ exports.getSinglePet = async (req, res, next) => {
 }
 
 exports.createPet = async (req, res, next) => {
-  if (!req.file) {
+  if (!req.files.photo) {
     return next(new AppError('Please select an image', 400))
   }
 
-  req.body.photo = req.file.filename
+  if (req.files.images) {
+    const petImages = []
+    for (let i = 0; i < req.files.images.length; i++) {
+      petImages.push(req.files.images[i].filename)
+    }
+    req.body.petHistoryImages = petImages
+  }
+
+  req.body.photo = req.files.photo[0].filename
   req.body.owner = req.user._id
   const newPet = await Pet.create(req.body)
 
@@ -74,12 +126,16 @@ exports.createPet = async (req, res, next) => {
 }
 
 exports.petProblems = async (req, res, next) => {
-  if (req.file) {
-    req.body.img = req.file.filename
+  if (req.files.images) {
+    const petImages = []
+    for (let i = 0; i < req.files.images.length; i++) {
+      petImages.push(req.files.images[i].filename)
+    }
+    req.body.images = petImages
   }
   const bodyProblem = {
     problem: req.body.problem,
-    img: req.body.img || null,
+    images: req.body.images || null,
     docname: req.body.docname,
   }
   const pet = await Pet.findByIdAndUpdate(
