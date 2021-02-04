@@ -1,6 +1,7 @@
 const Doctor = require('../models/doctorModal')
 const multer = require('multer')
 const AppError = require('../utils/AppError')
+const { nanoid } = require('nanoid')
 const fs = require('fs')
 
 const multerStorage = multer.diskStorage({
@@ -9,7 +10,7 @@ const multerStorage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     // const ext = file.originalname.split(".")[1];
-    cb(null, `doc-${Date.now()}.pdf`)
+    cb(null, `doc-${nanoid()}.pdf`)
   },
 })
 
@@ -26,7 +27,11 @@ const upload = multer({
   fileFilter: multerFilter,
 })
 
-exports.uploadPdfFile = upload.single('file')
+// exports.uploadPdfFile = upload.single('file')
+exports.uploadPdfFile = upload.fields([
+  { name: 'file', maxCount: 1 },
+  { name: 'profile', maxCount: 1 },
+])
 
 exports.getAllDoctors = async (req, res, next) => {
   let query
@@ -92,23 +97,46 @@ exports.getDoctorDetail = async (req, res, next) => {
 }
 
 exports.saveDoctorDetail = async (req, res, next) => {
-  if (!req.file) {
-    return next(new AppError('Please select a pdf file', 400))
+  if (!req.files.file) {
+    if (req.files.profile) fs.unlinkSync(req.files.profile[0].path)
+    return next(new AppError('Please select a file of .pdf file', 400))
+  }
+  if (!req.files.profile) {
+    if (req.files.file) fs.unlinkSync(req.files.file[0].path)
+    return next(new AppError('Please select a profile of .pdf file', 400))
+  }
+
+  if (req.files.file[0].size > 1000000) {
+    fs.unlinkSync(req.files.file[0].path)
+    fs.unlinkSync(req.files.profile[0].path)
+    return next(
+      new AppError(
+        'Please select a file of .pdf file of size less than 1Mb',
+        400
+      )
+    )
+  }
+
+  if (req.files.profile[0].size > 5000000) {
+    fs.unlinkSync(req.files.file[0].path)
+    fs.unlinkSync(req.files.profile[0].path)
+    return next(
+      new AppError(
+        'Please select a profile of .pdf file of size less than 5Mb',
+        400
+      )
+    )
   }
 
   const exDoctor = await Doctor.findOne({ user: req.user.id })
   if (exDoctor) {
+    fs.unlinkSync(req.files.file[0].path)
+    fs.unlinkSync(req.files.profile[0].path)
     return next(new AppError('You have already added your details!', 400))
   }
 
-  const filePath = req.file.path
-  const fileSize = req.file.size
-
-  if (fileSize > 1000000) {
-    // fs.unlinkSync(filePath);
-    return next(new AppError('Please upload file of size less than 1 Mb', 400))
-  }
-  req.body.file = req.file.filename
+  req.body.file = req.files.file[0].filename
+  req.body.profile = req.files.profile[0].filename
   req.body.user = req.user.id
   const newDetails = await Doctor.create(req.body)
   res.status(201).json({

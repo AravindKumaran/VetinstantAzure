@@ -2,14 +2,18 @@ const AppError = require('../utils/AppError')
 const fs = require('fs')
 
 const errorMid = (err, req, res, next) => {
+  if (req.files && req.files.file) {
+    fs.unlinkSync(req.files.file[0].path)
+  }
+  if (req.files && req.files.profile) {
+    fs.unlinkSync(req.files.profile[0].path)
+  }
   if (req.file && req.file.path) {
     fs.unlinkSync(req.file.path)
   }
 
   let error = { ...err }
   error.message = err.message
-
-  console.log(err)
 
   //   Mongoose Bad Object
   if (err.name === 'CastError') {

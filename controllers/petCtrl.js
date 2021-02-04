@@ -3,8 +3,6 @@ const AppError = require('../utils/AppError')
 const multer = require('multer')
 const sharp = require('sharp')
 const { nanoid } = require('nanoid')
-const fs = require('fs')
-const path = require('path')
 
 const multerStorage = multer.memoryStorage()
 
@@ -90,7 +88,8 @@ exports.getAllPets = async (req, res, next) => {
 }
 
 exports.getSinglePet = async (req, res, next) => {
-  const exPet = await Pet.findOne({ _id: req.params.id, owner: req.user._id })
+  // const exPet = await Pet.findOne({ _id: req.params.id, owner: req.user._id })
+  const exPet = await Pet.findById(req.params.id)
 
   if (!exPet) {
     return next(new AppError(`Pet with id ${req.params.id} not found`, 404))

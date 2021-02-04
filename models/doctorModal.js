@@ -16,6 +16,10 @@ const doctorSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Please add a form file'],
     },
+    profile: {
+      type: String,
+      required: [true, 'Please add a profile file'],
+    },
     accno: {
       type: String,
       required: [true, 'Please enter your account no.'],
@@ -41,6 +45,18 @@ const doctorSchema = new mongoose.Schema(
     fee: {
       type: String,
       required: [true, 'Please enter your fee'],
+    },
+    qlf: {
+      type: String,
+      required: [true, 'Please enter your Qualifications'],
+      enum: {
+        values: ['BVSc', 'BVSc& AH', 'MVSc', 'PhD'],
+        message: 'Please provide appropriate qualification',
+      },
+    },
+    regNo: {
+      type: String,
+      required: [true, 'Please enter your registration number'],
     },
     patientDetails: [
       {
