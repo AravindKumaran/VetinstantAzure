@@ -88,6 +88,7 @@ app.use('/api/v1/hospitals', require('./routes/hospitalRoutes'))
 app.use('/api/v1/rooms', require('./routes/roomRoutes'))
 app.use('/api/v1/chats', require('./routes/chatRoutes'))
 app.use('/api/v1/calllogs', require('./routes/callLogRoutes'))
+app.use('/api/v1/scheduledCalls', require('./routes/scheduledCallRoutes'))
 
 app.use(errorMid)
 
