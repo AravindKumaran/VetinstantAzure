@@ -2,6 +2,7 @@ const AppError = require('../utils/AppError')
 const fs = require('fs')
 
 const errorMid = (err, req, res, next) => {
+  // console.log(err)
   if (req.files && req.files.file) {
     fs.unlinkSync(req.files.file[0].path)
   }

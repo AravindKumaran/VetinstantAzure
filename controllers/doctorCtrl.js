@@ -39,12 +39,10 @@ exports.getAllDoctors = async (req, res, next) => {
   if (req.params.hospitalId) {
     query = Doctor.find({ hospital: req.params.hospitalId }).populate({
       path: 'user',
-      select: 'name isOnline',
     })
   } else {
     query = Doctor.find({}).populate({
       path: 'user',
-      select: 'name isOnline',
     })
   }
 
@@ -62,7 +60,6 @@ exports.getSingleDoctor = async (req, res, next) => {
     user: req.params.id,
   }).populate({
     path: 'user',
-    select: 'name emailID isOnline',
   })
 
   const doctor = await query
@@ -149,7 +146,6 @@ exports.getOnlineAvailableDoctors = async (req, res, next) => {
   const doctors = await Doctor.find({}).populate([
     {
       path: 'user',
-      select: 'name isOnline',
       match: {
         isOnline: true,
       },

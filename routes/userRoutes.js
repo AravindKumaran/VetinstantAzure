@@ -9,6 +9,9 @@ const {
   verifyPayment,
   getVideoToken,
   getUsersByDoctorId,
+  savePushToken,
+  sendPushNotification,
+  getPushToken,
 } = require('../controllers/userCtrl')
 
 const { protect, authorize } = require('../middleware/protect')
@@ -25,9 +28,13 @@ router.get(
 router.patch('/updateVet', protect, saveVet)
 router.patch('/userOffline/:id', userOffline)
 
+router.patch('/saveToken', protect, savePushToken)
+router.get('/getPushToken/:id', protect, getPushToken)
+router.post('/sendNotification', protect, sendPushNotification)
+
 router.post('/paydoctor', protect, authorize('user'), payDoctor)
 router.post('/verifyPayment', protect, authorize('user'), verifyPayment)
 
-router.get('/getToken', protect, getVideoToken)
+router.post('/getToken', protect, getVideoToken)
 
 module.exports = router

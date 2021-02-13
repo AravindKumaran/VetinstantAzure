@@ -6,6 +6,7 @@ const crypto = require('crypto')
 const twilio = require('twilio')
 const AccessToken = twilio.jwt.AccessToken
 const VideoGrant = AccessToken.VideoGrant
+const { Expo } = require('expo-server-sdk')
 
 let rzp = new Razorpay({
   key_id: `${process.env.KEY_ID}`,
@@ -150,8 +151,9 @@ exports.verifyPayment = async (req, res, next) => {
 }
 
 exports.getVideoToken = async (req, res, next) => {
-  if (!req.query || !req.query.userName) {
-    return res.status(400).send('Username parameter is required')
+  const { userName, roomName } = req.body
+  if (!userName || !roomName) {
+    return res.status(400).send('Please provide required fields')
   }
   const accessToken = new AccessToken(
     process.env.TWILIO_ACCOUNT_SID,
@@ -159,17 +161,88 @@ exports.getVideoToken = async (req, res, next) => {
     process.env.TWILIO_KEY_SECRET
   )
 
-  // Set the Identity of this token
-  accessToken.identity = req.query.userName
+  accessToken.identity = userName
 
-  // Grant access to Video
   const grant = new VideoGrant({
-    room: 'home',
+    room: roomName,
   })
   accessToken.addGrant(grant)
-
-  // Serialize the token as a JWT
+  console.log(accessToken)
   const jwt = accessToken.toJwt()
-  // console.log(accessToken, jwt)
   return res.send(jwt)
+}
+
+exports.savePushToken = async (req, res, next) => {
+  const user = await User.findById(req.user._id)
+
+  if (!user) {
+    return next(new AppError('User not found!', 404))
+  }
+
+  if (!Expo.isExpoPushToken(req.body.token)) {
+    return next(new AppError('Not valid token!', 400))
+  }
+  if (!user.token) {
+    user.token = req.body.token
+    await user.save()
+  } else if (user.token && user.token !== req.body.token) {
+    user.token = req.body.token
+    await user.save()
+  }
+
+  res.status(200).json({
+    success: true,
+    user,
+  })
+}
+
+exports.getPushToken = async (req, res, next) => {
+  const user = await User.findById(req.params.id)
+
+  if (!user) {
+    return next(new AppError('User not found!', 404))
+  }
+
+  res.status(200).json({
+    success: true,
+    token: user.token || null,
+  })
+}
+
+exports.sendPushNotification = async (req, res, next) => {
+  const expo = new Expo()
+  const { targetExpoPushToken, message, title, datas } = req.body
+
+  if (!targetExpoPushToken || !message) {
+    return next(new AppError('Please provide token and message', 400))
+  }
+
+  if (!Expo.isExpoPushToken(targetExpoPushToken)) {
+    return next(new AppError('Not valid token!', 400))
+  }
+
+  const chunks = expo.chunkPushNotifications([
+    {
+      to: targetExpoPushToken,
+      sound: 'default',
+      title: title || '',
+      body: message,
+      data: datas || {},
+    },
+  ])
+
+  const sendChunks = async () => {
+    chunks.forEach(async (chunk) => {
+      console.log('Sending Chunk', chunk)
+      try {
+        const tickets = await expo.sendPushNotificationsAsync(chunk)
+        console.log('Tickets', tickets)
+      } catch (error) {
+        console.log('Error sending chunk', error)
+      }
+    })
+  }
+  await sendChunks()
+
+  res.send('Done')
 }

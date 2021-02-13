@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
+const { Expo } = require('expo-server-sdk')
 
 const userSchema = new mongoose.Schema(
   {
@@ -31,6 +32,16 @@ const userSchema = new mongoose.Schema(
       enum: {
         values: ['user', 'doctor'],
         message: 'Role must be user or doctor!',
+      },
+    },
+
+    token: {
+      type: String,
+      validate: {
+        validator: function (tkn) {
+          return Expo.isExpoPushToken(tkn)
+        },
+        message: 'Token is not valid!',
       },
     },
 
