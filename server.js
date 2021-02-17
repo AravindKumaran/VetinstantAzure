@@ -24,7 +24,8 @@ mongoose
   .catch((err) => console.log(err))
 
 app.use(express.json())
-app.use(express.urlencoded({extended:true}))
+app.use(express.urlencoded({ extended: true }))
+app.use(cors())
 
 // Socket
 
@@ -59,6 +60,9 @@ io.on('connection', function (socket) {
         await axios.patch(
           `http://192.168.43.242:8000/api/v1/users/userOffline/${onlineUsers[index]}`
         )
+        // await axios.patch(
+        //   `https://vetinstantbe.azurewebsites.net/api/v1/users/userOffline/${onlineUsers[index]}`
+        // )
         onlineUsers.splice(index, 1)
         listOfUsers.splice(index, 1)
         console.log('Online', onlineUsers)
@@ -76,8 +80,6 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 app.use(express.static(path.join(__dirname, 'public/uploads')))
-
-app.use(cors())
 
 // Mounting routes
 
@@ -98,3 +100,6 @@ const PORT = process.env.PORT || 8000
 server.listen(PORT, '192.168.43.242', () =>
   console.log(`Server is running on port ${PORT}`)
 )
+// server.listen(PORT, 'https://vetinstantbe.azurewebsites.net', () =>
+//   console.log(`Server is running on port ${PORT}`)
+// )

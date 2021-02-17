@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
+const crypto = require('crypto')
 const { Expo } = require('expo-server-sdk')
 
 const userSchema = new mongoose.Schema(
@@ -52,6 +53,8 @@ const userSchema = new mongoose.Schema(
       type: mongoose.Schema.ObjectId,
     },
     isOnline: Boolean,
+    resetPasswordToken: String,
+    resetPasswordExpire: Date,
   },
   { timestamps: true }
 )
@@ -74,6 +77,19 @@ userSchema.methods.correctPassword = async function (
   userPassword
 ) {
   return await bcrypt.compare(enteredPassword, userPassword)
+}
+
+userSchema.methods.getResetPasswordToken = function () {
+  const resetToken = crypto.randomBytes(20).toString('hex')
+
+  this.resetPasswordToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex')
+
+  this.resetPasswordExpire = Date.now() + 10 * (60 * 1000)
+
+  return resetToken
 }
 
 module.exports = mongoose.model('User', userSchema)
