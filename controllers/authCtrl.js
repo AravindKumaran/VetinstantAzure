@@ -88,16 +88,43 @@ exports.forgotPassword = async (req, res, next) => {
     return next(new AppError('Email could not be sent', 404))
   }
 
-  const resetToken = user.getResetPasswordToken()
+  if (user.resetPasswordToken && user.resetPasswordExpire) {
+    return next(new AppError('Email already sent', 404))
+  }
 
-  await user.save()
+  let message
 
-  const resetUrl = `${process.env.frontend_url}/passwordreset/${resetToken}`
-
-  const message = `
-    <h1>
+  if (forMobilee) {
+    const uniqueId = customAlphabet('1234567890ajgrwxs', 6)
+    user.resetPasswordToken = uniqueId()
+    user.resetPasswordExpire = Date.now() + 10 * (60 * 1000)
+    await user.save()
+    message = `
+    <h4>
     You are receiving this because you (or someone else) have requested the reset of the password for your account.
-    </h1>
+    </h4>
+
+    <p>
+       Your Verification Code : <h1> ${user.resetPasswordToken} </h1>
+    </p>
+
+
+    <p>
+    If you did not request this, please ignore this email and your password will remain unchanged.
+    </p>
+  `
+  } else {
+    const resetToken = user.getResetPasswordToken()
+
+    await user.save()
+
+    const resetUrl = `${process.env.frontend_url}/passwordreset/${resetToken}`
+
+    message = `
+    <h4>
+    You are receiving this because you (or someone else) have requested the reset of the password for your account.
+    </h4>
+
 
     <p>
      Please click on the following link, or paste this into your browser to complete the process:
@@ -105,10 +132,12 @@ exports.forgotPassword = async (req, res, next) => {
 
     <a href=${resetUrl} clicktracking=off>${resetUrl}</a>
 
+
     <p>
     If you did not request this, please ignore this email and your password will remain unchanged.
     </p>
   `
+  }
 
   try {
     await sendEmail({
@@ -136,6 +165,38 @@ exports.resetPassword = async (req, res, next) => {
 
   const user = await User.findOne({
     resetPasswordToken,
+    resetPasswordExpire: { $gt: Date.now() },
+  })
+
+  if (!user) {
+    return next(new AppError('Invalid Reset Token', 400))
+  }
+
+  if (!req.body.password) {
+    return next(new AppError('Please provide your password', 400))
+  }
+
+  user.password = req.body.password
+  user.resetPasswordToken = undefined
+  user.resetPasswordExpire = undefined
+
+  await user.save()
+
+  res.status(201).json({
+    status: 'success',
+    msg: 'Password Reset Success',
+  })
+}
+
+exports.resetPasswordVerifyCode = async (req, res, next) => {
+  const { code } = req.body
+
+  if (!code) {
+    return next(new AppError('Invalid Code', 400))
+  }
+
+  const user = await User.findOne({
+    resetPasswordToken: req.body.code,
     resetPasswordExpire: { $gt: Date.now() },
   })
 

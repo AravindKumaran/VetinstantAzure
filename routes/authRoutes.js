@@ -6,6 +6,7 @@ const {
   googleAuth,
   forgotPassword,
   resetPassword,
+  resetPasswordVerifyCode,
 } = require('../controllers/authCtrl')
 
 router.post('/signup', signup)
@@ -14,5 +15,6 @@ router.post('/saveGoogle', googleAuth)
 
 router.post('/forgotpassword', forgotPassword)
 router.post('/resetpassword/:resetToken', resetPassword)
+router.post('/resetpasswordmobile', resetPasswordVerifyCode)
 
 module.exports = router
