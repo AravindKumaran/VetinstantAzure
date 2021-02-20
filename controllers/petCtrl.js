@@ -136,6 +136,17 @@ exports.petProblems = async (req, res, next) => {
     problem: req.body.problem,
     images: req.body.images || null,
     docname: req.body.docname,
+    time: req.body.time,
+    Appetite: req.body.Appetite,
+    Behaviour: req.body.Behaviour,
+    Feces: req.body.Feces,
+    Urine: req.body.Urine,
+    Eyes: req.body.Eyes,
+    Mucous: req.body.Mucous,
+    Ears: req.body.Ears,
+    Skin: req.body.Skin,
+    Gait: req.body.Gait,
+    comment: req.body.comment
   }
   const pet = await Pet.findByIdAndUpdate(
     req.params.id,
