@@ -59,7 +59,7 @@ io.on('connection', function (socket) {
       const index = listOfUsers.findIndex((user) => user.id === socket.id)
       if (index !== -1) {
         await axios.patch(
-          `http://192.168.43.242:8000/api/v1/users/userOffline/${onlineUsers[index]}`
+          `http://127.0.0.1:8000/api/v1/users/userOffline/${onlineUsers[index]}`
         )
         // await axios.patch(
         //   `https://vetinstantbe.azurewebsites.net/api/v1/users/userOffline/${onlineUsers[index]}`
@@ -98,7 +98,7 @@ app.use(errorMid)
 
 const PORT = process.env.PORT || 8000
 
-server.listen(PORT, '192.168.43.242', () =>
+server.listen(PORT, '127.0.0.1', () =>
   console.log(`Server is running on port ${PORT}`)
 )
 // server.listen(PORT, 'https://vetinstantbe.azurewebsites.net', () =>
