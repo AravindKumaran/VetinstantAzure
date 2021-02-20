@@ -211,6 +211,7 @@ exports.getPushToken = async (req, res, next) => {
 
 exports.sendPushNotification = async (req, res, next) => {
   const expo = new Expo()
+  console.log('REqqBody', req.body)
   const { targetExpoPushToken, message, title, datas } = req.body
 
   if (!targetExpoPushToken || !message) {

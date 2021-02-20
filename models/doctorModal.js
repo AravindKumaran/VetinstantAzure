@@ -46,6 +46,10 @@ const doctorSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Please enter your fee'],
     },
+    firstAvailaibeVet: {
+      type: Boolean,
+      default: false,
+    },
     qlf: {
       type: String,
       required: [true, 'Please enter your Qualifications'],
