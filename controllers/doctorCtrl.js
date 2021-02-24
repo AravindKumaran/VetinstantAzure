@@ -28,10 +28,7 @@ const upload = multer({
 })
 
 // exports.uploadPdfFile = upload.single('file')
-exports.uploadPdfFile = upload.fields([
-  { name: 'file', maxCount: 1 },
-  { name: 'profile', maxCount: 1 },
-])
+exports.uploadPdfFile = upload.fields([{ name: 'file', maxCount: 1 }])
 
 exports.getAllDoctors = async (req, res, next) => {
   let query
@@ -95,31 +92,14 @@ exports.getDoctorDetail = async (req, res, next) => {
 
 exports.saveDoctorDetail = async (req, res, next) => {
   if (!req.files.file) {
-    if (req.files.profile) fs.unlinkSync(req.files.profile[0].path)
     return next(new AppError('Please select a file of .pdf file', 400))
-  }
-  if (!req.files.profile) {
-    if (req.files.file) fs.unlinkSync(req.files.file[0].path)
-    return next(new AppError('Please select a profile of .pdf file', 400))
   }
 
   if (req.files.file[0].size > 1000000) {
     fs.unlinkSync(req.files.file[0].path)
-    fs.unlinkSync(req.files.profile[0].path)
     return next(
       new AppError(
         'Please select a file of .pdf file of size less than 1Mb',
-        400
-      )
-    )
-  }
-
-  if (req.files.profile[0].size > 5000000) {
-    fs.unlinkSync(req.files.file[0].path)
-    fs.unlinkSync(req.files.profile[0].path)
-    return next(
-      new AppError(
-        'Please select a profile of .pdf file of size less than 5Mb',
         400
       )
     )
@@ -133,7 +113,6 @@ exports.saveDoctorDetail = async (req, res, next) => {
   }
 
   req.body.file = req.files.file[0].filename
-  req.body.profile = req.files.profile[0].filename
   req.body.user = req.user.id
   const newDetails = await Doctor.create(req.body)
   res.status(201).json({

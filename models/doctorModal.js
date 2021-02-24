@@ -16,10 +16,6 @@ const doctorSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Please add a form file'],
     },
-    profile: {
-      type: String,
-      required: [true, 'Please add a profile file'],
-    },
     accno: {
       type: String,
       required: [true, 'Please enter your account no.'],

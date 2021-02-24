@@ -98,9 +98,7 @@ app.use(errorMid)
 
 const PORT = process.env.PORT || 8000
 
-server.listen(PORT, '127.0.0.1', () =>
+server.listen(PORT, '192.168.43.242', () =>
   console.log(`Server is running on port ${PORT}`)
 )
-// server.listen(PORT, 'https://vetinstantbe.azurewebsites.net', () =>
-//   console.log(`Server is running on port ${PORT}`)
-// )
+// server.listen(PORT, () => console.log(`Server is running on port ${PORT}`))
