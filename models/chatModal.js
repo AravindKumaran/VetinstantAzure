@@ -1,10 +1,6 @@
 const mongoose = require('mongoose')
 
 const chatSchema = new mongoose.Schema({
-  _id: {
-    type: String,
-    required: true,
-  },
   text: {
     type: String,
     required: [true, 'Please enter text'],

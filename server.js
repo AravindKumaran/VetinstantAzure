@@ -59,7 +59,7 @@ io.on('connection', function (socket) {
       const index = listOfUsers.findIndex((user) => user.id === socket.id)
       if (index !== -1) {
         await axios.patch(
-          `http://127.0.0.1:8000/api/v1/users/userOffline/${onlineUsers[index]}`
+          `http://192.168.43.242:8000/api/v1/users/userOffline/${onlineUsers[index]}`
         )
         // await axios.patch(
         //   `https://vetinstantbe.azurewebsites.net/api/v1/users/userOffline/${onlineUsers[index]}`
