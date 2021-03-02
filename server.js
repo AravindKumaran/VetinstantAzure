@@ -9,6 +9,7 @@ const http = require('http')
 // const http = require('https')
 const socketio = require('socket.io')
 const axios = require('axios')
+const fs = require('fs')
 
 const app = express()
 
@@ -76,9 +77,15 @@ io.on('connection', function (socket) {
   })
 })
 
-if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('tiny'))
-}
+// if (process.env.NODE_ENV === 'development') {
+//   app.use(morgan('tiny'))
+// }
+
+const logs = fs.createWriteStream(path.join(__dirname, 'logs.log'), {
+  flags: 'a',
+})
+
+app.use(morgan('combined', { stream: logs }))
 
 app.use(express.static(path.join(__dirname, 'public/uploads')))
 

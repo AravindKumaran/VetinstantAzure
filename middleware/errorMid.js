@@ -2,7 +2,9 @@ const AppError = require('../utils/AppError')
 const fs = require('fs')
 
 const errorMid = (err, req, res, next) => {
-  // console.log(err)
+  fs.writeFileSync('./abc.text', `${JSON.stringify(err)}\n\n`, { flag: 'a' })
+  // console.log('Error', err)
+
   if (req.files && req.files.file) {
     fs.unlinkSync(req.files.file[0].path)
   }
