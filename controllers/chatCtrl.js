@@ -1,4 +1,5 @@
 const Chat = require('../models/chatModal')
+const AppError = require('../utils/AppError')
 
 exports.saveChat = async (req, res, next) => {
   const newChat = await Chat.create(req.body)
@@ -6,6 +7,18 @@ exports.saveChat = async (req, res, next) => {
   res.status(201).json({
     status: 'success',
     newChat,
+  })
+}
+exports.getSingleChat = async (req, res, next) => {
+  const chat = await Chat.findById(req.params.id)
+
+  if (!chat) {
+    return next(new AppError('chat not found', 404))
+  }
+
+  res.status(200).json({
+    status: 'success',
+    chat,
   })
 }
 
