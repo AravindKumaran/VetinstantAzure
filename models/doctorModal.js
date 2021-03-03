@@ -18,16 +18,13 @@ const doctorSchema = new mongoose.Schema(
     },
     accno: {
       type: String,
-      required: [true, 'Please enter your account no.'],
-      minlength: [13, 'Invalid account no.'],
+      minlength: [9, 'Invalid account no.'],
     },
     accname: {
       type: String,
-      required: [true, 'Please enter your name on card'],
     },
     acctype: {
       type: 'String',
-      required: [true, 'Please enter your account type'],
       enum: {
         values: ['savings', 'current'],
         message: 'Account type must be either savings or current',
@@ -35,7 +32,6 @@ const doctorSchema = new mongoose.Schema(
     },
     ifsc: {
       type: String,
-      required: [true, 'Please enter your bank ifsc code'],
       minlength: [11, 'Invalid IFSC code'],
     },
     fee: {

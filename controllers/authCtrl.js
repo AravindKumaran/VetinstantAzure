@@ -88,9 +88,9 @@ exports.forgotPassword = async (req, res, next) => {
     return next(new AppError('Email could not be sent', 404))
   }
 
-  if (user.resetPasswordToken && user.resetPasswordExpire) {
-    return next(new AppError('Email already sent', 404))
-  }
+  // if (user.resetPasswordToken && user.resetPasswordExpire) {
+  //   return next(new AppError('Email already sent', 404))
+  // }
 
   let message
 

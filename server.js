@@ -63,8 +63,11 @@ io.on('connection', function (socket) {
           `http://192.168.29.239:8000/api/v1/users/userOffline/${onlineUsers[index]}`
         )
         // await axios.patch(
-        //   `https://vetinstantbe.azurewebsites.net/api/v1/users/userOffline/${onlineUsers[index]}`
+        //   `http://192.168.43.242:8000/api/v1/users/userOffline/${onlineUsers[index]}`
         // )
+        await axios.patch(
+          `https://vetinstantbe.azurewebsites.net/api/v1/users/userOffline/${onlineUsers[index]}`
+        )
         onlineUsers.splice(index, 1)
         listOfUsers.splice(index, 1)
         console.log('Online', onlineUsers)
@@ -77,15 +80,15 @@ io.on('connection', function (socket) {
   })
 })
 
-// if (process.env.NODE_ENV === 'development') {
-//   app.use(morgan('tiny'))
-// }
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('tiny'))
+}
 
-const logs = fs.createWriteStream(path.join(__dirname, 'logs.log'), {
-  flags: 'a',
-})
+// const logs = fs.createWriteStream(path.join(__dirname, 'logs.log'), {
+//   flags: 'a',
+// })
 
-app.use(morgan('combined', { stream: logs }))
+// app.use(morgan('combined', { stream: logs }))
 
 app.use(express.static(path.join(__dirname, 'public/uploads')))
 

@@ -91,6 +91,13 @@ exports.getDoctorDetail = async (req, res, next) => {
 }
 
 exports.saveDoctorDetail = async (req, res, next) => {
+
+  const { accno, accname, acctype, ifsc,fee } = req.body
+
+  if(fee>0 && !accno && !accname && !acctype && !ifsc){
+    return next(new AppError('Please provide the values',400))
+  }
+
   if (!req.files.file) {
     return next(new AppError('Please select a file of .pdf file', 400))
   }
