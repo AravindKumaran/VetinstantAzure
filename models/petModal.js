@@ -10,8 +10,8 @@ const petSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Please add pet type'],
       enum: {
-        values: ['dog', 'cat', 'other'],
-        message: 'Pet type is either: dog,cat,other',
+        values: ['dog', 'cat', 'cattle', 'sheep/goat', 'poultry', 'other'],
+        message: 'Pet type is either: dog,cat,cattle,sheep/goat,poultry,other',
       },
     },
     photo: {
@@ -94,8 +94,8 @@ const petSchema = new mongoose.Schema(
           type: String,
           required: [true, 'Please enter the Eyes'],
           // enum: {
-          //   values: ['Normal', 'Abnormal Discharged', 'Kotlin'],
-          //   message: 'Eye is either: Normal,Abnormal Discharged,Kotlin',
+          //   values: ['Normal', 'Abnormal Discharge'],
+          //   message: 'Eye is either: Normal,Abnormal Discharge',
           // },
         },
         Mucous:{
