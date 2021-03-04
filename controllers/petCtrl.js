@@ -146,7 +146,7 @@ exports.petProblems = async (req, res, next) => {
     Ears: req.body.Ears,
     Skin: req.body.Skin,
     Gait: req.body.Gait,
-    comment: req.body.comment
+    comment: req.body.comment,
   }
   const pet = await Pet.findByIdAndUpdate(
     req.params.id,
