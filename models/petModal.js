@@ -54,86 +54,65 @@ const petSchema = new mongoose.Schema(
           type: String,
           required: [true, 'Please enter your doc name'],
         },
-        time:{
+        time: {
           type: Number,
           required: [true, 'enter the period of the problem in numbers(days)'],
         },
-        Appetite:{
+        Appetite: {
           type: String,
           required: [true, 'Please enter the Appetite'],
-          // enum: {
-          //   values: ['Normal', 'Not Observed', 'Different from Normal'],
-          //   message: 'Appetite is either: Normal,Not Observed,Different from Normal',
-          // },
         },
-        Behaviour:{
+        Behaviour: {
           type: String,
           required: [true, 'Please enter the Behaviour'],
-          // enum: {
-          //   values: ['Normal', 'Not Observed', 'Different from Normal'],
-          //   message: 'Behaviour is either: Normal,Not Observed,Different from Normal',
-          // },
         },
-        Feces:{
-          type: String,
-          required: [true, 'Please enter the Feces'],
-          // enum: {
-          //   values: ['Normal', 'Not Observed', 'Abnormal Colour', 'Worms'],
-          //   message: 'Feces is either: Normal,Not Observed,Abnormal Colour,Worms',
-          // },
-        },
-        Urine:{
-          type: String,
-          required: [true, 'Please enter the Urine'],
-          // enum: {
-          //   values: ['Normal', 'Not Observed', 'Abnormal Colour'],
-          //   message: 'Pet type is either: Normal,Not Observed,Abnormal Colour',
-          // },
-        },
-        Eyes:{
+        Feces: [
+          {
+            type: String,
+            required: [true, 'Please enter the Feces'],
+          },
+        ],
+        Urine: [
+          {
+            type: String,
+            required: [true, 'Please enter the Urine'],
+          },
+        ],
+        Eyes: {
           type: String,
           required: [true, 'Please enter the Eyes'],
+<<<<<<< HEAD
           // enum: {
           //   values: ['Normal', 'Abnormal Discharge'],
           //   message: 'Eye is either: Normal,Abnormal Discharge',
           // },
+=======
+>>>>>>> 71d6ff11255ff8c021195237cfd01282d2a3779c
         },
-        Mucous:{
+        Mucous: {
           type: String,
           required: [true, 'Please enter the Mucous'],
-          // enum: {
-          //   values: ['White', 'Pink-White', 'Pink', 'Red-Pink', 'Red', 'Dark Red', 'Yellow'],
-          //   message: 'Mucous is either: ,White,Pink-White,Pink,Red-Pink,Red,Dark Red,Yellow',
-          // },
         },
-        Ears:{
-          type: String,
-          required: [true, 'Please enter the Ears'],
-          // enum: {
-          //   values: ['Normal', 'Abnormal Discharge', 'Abnormal Odour', 'Abnormal appearance'],
-          //   message: 'Ear is either: Normal,Abnormal Discharge,Abnormal Odour,Abnormal appearance',
-          // },
-        },
-        Skin:{
-          type: String,
-          required: [true, 'Please enter the Skin'],
-          // enum: {
-          //   values: ['Normal', 'Injuries', 'Odour', 'Hairfall', 'Rough Coat', 'Changes in Appearance'],
-          //   message: 'Skin is either: Normal,Injuries,Odour,Hairfall,Rough Coat,Changes in Appearance',
-          // },
-        },
-        Gait:{
+        Ears: [
+          {
+            type: String,
+            required: [true, 'Please enter the Ears'],
+          },
+        ],
+        Skin: [
+          {
+            type: String,
+            required: [true, 'Please enter the Skin'],
+          },
+        ],
+        Gait: {
           type: String,
           required: [true, 'Please enter the Gait'],
-          // enum: {
-          //   values: ['Normal', 'Not Observed', 'Different from Normal'],
-          //   message: 'Gait is either: Normal,Not Observed,Different from Normal',
-          // },
         },
-        comment:{
+        comment: {
           type: String,
           required: [true, 'Please enter your comment'],
-        }
+        },
       },
     ],
     prescriptions: [
