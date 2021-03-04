@@ -13,15 +13,15 @@ const multerStorage = multer.diskStorage({
     cb(null, `doc-${nanoid()}.pdf`)
   },
 })
-const multerStorage2 = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'public/uploads/img')
-  },
-  filename: (req, file, cb) => {
-    const ext = file.originalname.split('.')[1]
-    cb(null, `img-${nanoid()}.${ext}`)
-  },
-})
+// const multerStorage2 = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, 'public/uploads/img')
+//   },
+//   filename: (req, file, cb) => {
+//     const ext = file.originalname.split('.')[1]
+//     cb(null, `img-${nanoid()}.${ext}`)
+//   },
+// })
 
 const multerFilter = (req, file, cb) => {
   if (file.mimetype === 'application/pdf') {
@@ -30,20 +30,20 @@ const multerFilter = (req, file, cb) => {
     cb(new AppError('Not an pdf file! Please upload a .pdf file', 400), false)
   }
 }
-const multerFilter2 = (req, file, cb) => {
-  if (file.mimetype.startsWith('image')) {
-    cb(null, true)
-  } else {
-    cb(
-      new AppError('Not an image file! Please upload a image file', 400),
-      false
-    )
-  }
-}
+// const multerFilter2 = (req, file, cb) => {
+//   if (file.mimetype.startsWith('image')) {
+//     cb(null, true)
+//   } else {
+//     cb(
+//       new AppError('Not an image file! Please upload a image file', 400),
+//       false
+//     )
+//   }
+// }
 
 const upload = multer({
-  storage: multerStorage2,
-  fileFilter: multerFilter2,
+  storage: multerStorage,
+  fileFilter: multerFilter,
 })
 
 // exports.uploadPdfFile = upload.single('file')
