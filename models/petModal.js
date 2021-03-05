@@ -81,6 +81,10 @@ const petSchema = new mongoose.Schema(
         Eyes: {
           type: String,
           required: [true, 'Please enter the Eyes'],
+          // enum: {
+          //   values: ['Normal', 'Abnormal Discharge'],
+          //   message: 'Eye is either: Normal,Abnormal Discharge',
+          // },
         },
         Mucous: {
           type: String,
