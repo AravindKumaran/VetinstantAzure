@@ -3,77 +3,54 @@ const AppError = require('../utils/AppError')
 const multer = require('multer')
 const sharp = require('sharp')
 const { nanoid } = require('nanoid')
+const fs = require('fs')
 
-const multerStorage = multer.memoryStorage()
-
-const upload = multer({
-  storage: multerStorage,
-  // fileFilter: multerFilter,
+const multerStorage2 = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'public/uploads/img')
+  },
+  filename: (req, file, cb) => {
+    const ext = file.mimetype.split('/')[1]
+    cb(null, `img-${nanoid()}.${ext}`)
+  },
 })
 
+const multerFilter2 = (req, file, cb) => {
+  if (file.mimetype.startsWith('image')) {
+    cb(null, true)
+  } else {
+    cb(
+      new AppError('Not an image file! Please upload a image file', 400),
+      false
+    )
+  }
+}
+
+const upload = multer({
+  storage: multerStorage2,
+  fileFilter: multerFilter2,
+})
 exports.uploadPetPhoto = upload.single('photo')
-// exports.uploadMultiplePhoto = upload.array('images')
-exports.uploadMultiplePhoto = upload.fields([
+
+const multerStorage3 = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'public/uploads/img')
+  },
+  filename: (req, file, cb) => {
+    console.log('StorageFile', file)
+    const ext = file.mimetype.split('/')[1]
+    cb(null, `img-${nanoid()}.${ext}`)
+  },
+})
+
+const multipleUpload = multer({
+  storage: multerStorage3,
+})
+
+exports.uploadMultiplePhoto = multipleUpload.fields([
   { name: 'photo', maxCount: 1 },
   { name: 'images' },
 ])
-exports.resizePhoto = (req, res, next) => {
-  if (!req.file) return next()
-
-  if (!req.file.mimetype.startsWith('image') || req.file.size > 1000000) {
-    return next(
-      new AppError('Please select an image with size less than 1mb', 400)
-    )
-  }
-
-  req.file.filename = `img/pet-${nanoid()}.jpeg`
-
-  sharp(req.file.buffer)
-    .resize(500, 500)
-    .toFormat('jpeg')
-    .jpeg({
-      quality: 90,
-    })
-    .toFile(`public/uploads/${req.file.filename}`)
-
-  next()
-}
-
-exports.resizeMultiplePhoto = (req, res, next) => {
-  if (!req.files) return next()
-
-  let values = []
-  if (req.files.images) {
-    values = Object.values(req.files.images)
-  }
-
-  if (req.files.photo) {
-    values.push(req.files.photo[0])
-  }
-
-  if (!values) return next()
-
-  for (let i = 0; i < values.length; i++) {
-    if (!values[i].mimetype.startsWith('image') || values[i].size > 1000000) {
-      return next(
-        new AppError('Please select an image with size less than 1mb', 400)
-      )
-    }
-  }
-
-  for (let i = 0; i < values.length; i++) {
-    values[i].filename = `img/pet-${nanoid()}.jpeg`
-    sharp(values[i].buffer)
-      .resize(500, 500)
-      .toFormat('jpeg')
-      .jpeg({
-        quality: 90,
-      })
-      .toFile(`public/uploads/${values[i].filename}`)
-  }
-
-  next()
-}
 
 exports.getAllPets = async (req, res, next) => {
   // const pets = await Pet.find({});
@@ -106,6 +83,23 @@ exports.createPet = async (req, res, next) => {
     return next(new AppError('Please select an image', 400))
   }
 
+  let values = []
+  if (req.files.images) {
+    values = Object.values(req.files.images)
+  }
+
+  if (req.files.photo) {
+    values.push(req.files.photo[0])
+  }
+
+  for (let i = 0; i < values.length; i++) {
+    if (!values[i].mimetype.startsWith('image') || values[i].size > 1000000) {
+      return next(
+        new AppError('Please select an image with size less than 1mb', 400)
+      )
+    }
+  }
+
   if (req.files.images) {
     const petImages = []
     for (let i = 0; i < req.files.images.length; i++) {
@@ -113,11 +107,9 @@ exports.createPet = async (req, res, next) => {
     }
     req.body.petHistoryImages = petImages
   }
-
   req.body.photo = req.files.photo[0].filename
   req.body.owner = req.user._id
   const newPet = await Pet.create(req.body)
-
   res.status(201).json({
     status: 'success',
     newPet,
@@ -125,6 +117,16 @@ exports.createPet = async (req, res, next) => {
 }
 
 exports.petProblems = async (req, res, next) => {
+  if (req.files.images) {
+    let values = Object.values(req.files.images)
+    for (let i = 0; i < values.length; i++) {
+      if (!values[i].mimetype.startsWith('image') || values[i].size > 1000000) {
+        return next(
+          new AppError('Please select an image with size less than 1mb', 400)
+        )
+      }
+    }
+  }
   if (req.files.images) {
     const petImages = []
     for (let i = 0; i < req.files.images.length; i++) {
@@ -165,6 +167,16 @@ exports.petProblems = async (req, res, next) => {
   })
 }
 exports.petPrescription = async (req, res, next) => {
+  // console.log('Req', req.file)
+  if (req.file && req.file.size > 1000000) {
+    fs.unlinkSync(req.file.path)
+    return next(
+      new AppError(
+        'Please select a file of image file of size less than 1Mb',
+        400
+      )
+    )
+  }
   if (req.file) {
     req.body.img = req.file.filename
   }
@@ -173,6 +185,7 @@ exports.petPrescription = async (req, res, next) => {
     img: req.body.img || null,
     docname: req.body.docname,
   }
+
   // const pet = await Pet.findById(req.params.id)
   const pet = await Pet.findByIdAndUpdate(
     req.params.id,

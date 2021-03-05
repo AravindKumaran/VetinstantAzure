@@ -13,15 +13,6 @@ const multerStorage = multer.diskStorage({
     cb(null, `doc-${nanoid()}.pdf`)
   },
 })
-// const multerStorage2 = multer.diskStorage({
-//   destination: (req, file, cb) => {
-//     cb(null, 'public/uploads/img')
-//   },
-//   filename: (req, file, cb) => {
-//     const ext = file.originalname.split('.')[1]
-//     cb(null, `img-${nanoid()}.${ext}`)
-//   },
-// })
 
 const multerFilter = (req, file, cb) => {
   if (file.mimetype === 'application/pdf') {
@@ -30,16 +21,6 @@ const multerFilter = (req, file, cb) => {
     cb(new AppError('Not an pdf file! Please upload a .pdf file', 400), false)
   }
 }
-// const multerFilter2 = (req, file, cb) => {
-//   if (file.mimetype.startsWith('image')) {
-//     cb(null, true)
-//   } else {
-//     cb(
-//       new AppError('Not an image file! Please upload a image file', 400),
-//       false
-//     )
-//   }
-// }
 
 const upload = multer({
   storage: multerStorage,
@@ -133,12 +114,18 @@ exports.saveDoctorDetail = async (req, res, next) => {
   const exDoctor = await Doctor.findOne({ user: req.user.id })
   if (exDoctor) {
     fs.unlinkSync(req.files.file[0].path)
-    fs.unlinkSync(req.files.profile[0].path)
+    // fs.unlinkSync(req.files.profile[0].path)
     return next(new AppError('You have already added your details!', 400))
   }
 
   req.body.file = req.files.file[0].filename
   req.body.user = req.user.id
+  if (fee <= 0) {
+    req.body.accno = ''
+    req.body.accname = ''
+    req.body.acctype = ''
+    req.body.ifsc = ''
+  }
   const newDetails = await Doctor.create(req.body)
   res.status(201).json({
     status: 'success',
