@@ -55,6 +55,10 @@ io.on('connection', function (socket) {
     io.to(room).emit('chat', msg)
   })
 
+  socket.on('videoCall', (data) => {
+    io.emit('videoCall', data)
+  })
+
   socket.on('disconnect', async () => {
     try {
       const index = listOfUsers.findIndex((user) => user.id === socket.id)
