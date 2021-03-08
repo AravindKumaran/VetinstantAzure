@@ -4,6 +4,7 @@ const {
   getAllPets,
   getSinglePet,
   createPet,
+  updatePet,
   uploadPetPhoto,
   petProblems,
   petPrescription,
@@ -27,6 +28,6 @@ router.route('/').get(getAllPets).post(uploadMultiplePhoto, createPet)
 
 router.patch('/problems/:id', uploadMultiplePhoto, petProblems)
 
-router.get('/:id', getSinglePet)
+router.route('/:id').get(getSinglePet).patch(uploadMultiplePhoto, updatePet)
 
 module.exports = router

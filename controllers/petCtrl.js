@@ -116,6 +116,35 @@ exports.createPet = async (req, res, next) => {
   })
 }
 
+exports.updatePet = async (req, res, next) => {
+  // console.log('Req', req.body)
+  if (req.files?.photo) {
+    if (
+      !req.files.photo[0].mimetype.startsWith('image') ||
+      req.files.photo[0].size > 1000000
+    ) {
+      return next(
+        new AppError('Please select an image with size less than 1mb', 400)
+      )
+    }
+    req.body.photo = req.files.photo[0].filename
+  }
+
+  const existingPet = await Pet.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  })
+
+  if (!existingPet) {
+    return next(new AppError('Pet not found', 404))
+  }
+
+  res.status(201).json({
+    status: 'success',
+    updatedPet: existingPet,
+  })
+}
+
 exports.petProblems = async (req, res, next) => {
   if (req.files.images) {
     let values = Object.values(req.files.images)
