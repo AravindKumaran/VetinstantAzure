@@ -1,17 +1,15 @@
 const Doctor = require('../models/doctorModal')
 const multer = require('multer')
 const AppError = require('../utils/AppError')
-const { nanoid } = require('nanoid')
-const fs = require('fs')
+const MulterAzureStorage = require('multer-azure-storage')
 
-const multerStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'public/uploads/doc')
-  },
-  filename: (req, file, cb) => {
-    // const ext = file.originalname.split(".")[1];
-    cb(null, `doc-${nanoid()}.pdf`)
-  },
+const azureMulterStorage = new MulterAzureStorage({
+  azureStorageConnectionString: process.env.AZURE_CONN_STRING,
+  azureStorageAccount: process.env.AZURE_STR_ACC,
+  azureStorageAccessKey: process.env.AZURE_STR_ACC_KEY,
+  containerName: 'documents',
+  containerSecurity: 'blob',
+  // fileName: (file) => `1.png`,
 })
 
 const multerFilter = (req, file, cb) => {
@@ -23,11 +21,10 @@ const multerFilter = (req, file, cb) => {
 }
 
 const upload = multer({
-  storage: multerStorage,
+  storage: azureMulterStorage,
   fileFilter: multerFilter,
 })
 
-// exports.uploadPdfFile = upload.single('file')
 exports.uploadPdfFile = upload.fields([{ name: 'file', maxCount: 1 }])
 
 exports.getAllDoctors = async (req, res, next) => {
@@ -102,7 +99,6 @@ exports.saveDoctorDetail = async (req, res, next) => {
   }
 
   if (req.files.file[0].size > 1000000) {
-    fs.unlinkSync(req.files.file[0].path)
     return next(
       new AppError(
         'Please select a file of .pdf file of size less than 1Mb',
@@ -113,19 +109,11 @@ exports.saveDoctorDetail = async (req, res, next) => {
 
   const exDoctor = await Doctor.findOne({ user: req.user.id })
   if (exDoctor) {
-    fs.unlinkSync(req.files.file[0].path)
-    // fs.unlinkSync(req.files.profile[0].path)
     return next(new AppError('You have already added your details!', 400))
   }
 
-  req.body.file = req.files.file[0].filename
+  req.body.file = req.files.file[0].url
   req.body.user = req.user.id
-  if (fee <= 0) {
-    req.body.accno = ''
-    req.body.accname = ''
-    req.body.acctype = ''
-    req.body.ifsc = ''
-  }
   const newDetails = await Doctor.create(req.body)
   res.status(201).json({
     status: 'success',

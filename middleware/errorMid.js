@@ -1,26 +1,11 @@
 const AppError = require('../utils/AppError')
-const fs = require('fs')
 
 const errorMid = (err, req, res, next) => {
   // fs.writeFileSync('./abc.text', `${JSON.stringify(err)}\n\n`, { flag: 'a' })
   // console.log('Error', err)
 
-  if (req.files && req.files.file) {
-    fs.unlinkSync(req.files.file[0].path)
-  }
-  if (req.files && req.files.photo) {
-    fs.unlinkSync(req.files.photo[0].path)
-  }
-
-  if (req.files && req.files.images) {
-    let values = Object.values(req.files.images)
-    for (let i = 0; i < values.length; i++) {
-      fs.unlinkSync(values[i].path)
-    }
-  }
-
-  // if (req.file && req.file.path) {
-  //   fs.unlinkSync(req.file.path)
+  // if (req.files && req.files.file) {
+  //   fs.unlinkSync(req.files.file[0].path)
   // }
 
   let error = { ...err }
