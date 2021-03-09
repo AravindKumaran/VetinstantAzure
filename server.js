@@ -9,8 +9,11 @@ const http = require('http')
 // const http = require('https')
 const socketio = require('socket.io')
 const axios = require('axios')
-const fs = require('fs')
-
+const mongoSanitize = require('express-mongo-sanitize')
+const helmet = require('helmet')
+const xss = require('xss-clean')
+const hpp = require('hpp')
+const rateLimit = require('express-rate-limit')
 const app = express()
 
 const errorMid = require('./middleware/errorMid')
@@ -28,6 +31,18 @@ mongoose
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cors())
+
+app.use(mongoSanitize())
+app.use(helmet())
+app.use(xss())
+app.use(hpp())
+
+const limiter = rateLimit({
+  windowMs: 10 * 60 * 1000, // 10 minutes
+  max: 100,
+})
+
+app.use(limiter)
 
 // Socket
 
