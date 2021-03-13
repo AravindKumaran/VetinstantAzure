@@ -4,12 +4,11 @@ const {
   getAllPets,
   getSinglePet,
   createPet,
+  updatePet,
   uploadPetPhoto,
-  resizePhoto,
   petProblems,
   petPrescription,
   uploadMultiplePhoto,
-  resizeMultiplePhoto,
 } = require('../controllers/petCtrl')
 
 const { protect, authorize } = require('../middleware/protect')
@@ -20,24 +19,15 @@ router.patch(
   '/prescription/:id',
   authorize('doctor'),
   uploadPetPhoto,
-  resizePhoto,
   petPrescription
 )
 
 // router.use(authorize('user'))
 
-router
-  .route('/')
-  .get(getAllPets)
-  .post(uploadMultiplePhoto, resizeMultiplePhoto, createPet)
+router.route('/').get(getAllPets).post(uploadMultiplePhoto, createPet)
 
-router.patch(
-  '/problems/:id',
-  uploadMultiplePhoto,
-  resizeMultiplePhoto,
-  petProblems
-)
+router.patch('/problems/:id', uploadMultiplePhoto, petProblems)
 
-router.get('/:id', getSinglePet)
+router.route('/:id').get(getSinglePet).patch(uploadMultiplePhoto, updatePet)
 
 module.exports = router

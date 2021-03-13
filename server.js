@@ -9,8 +9,11 @@ const http = require('http')
 // const http = require('https')
 const socketio = require('socket.io')
 const axios = require('axios')
-const fs = require('fs')
-
+const mongoSanitize = require('express-mongo-sanitize')
+const helmet = require('helmet')
+const xss = require('xss-clean')
+const hpp = require('hpp')
+const rateLimit = require('express-rate-limit')
 const app = express()
 
 const errorMid = require('./middleware/errorMid')
@@ -28,6 +31,18 @@ mongoose
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cors())
+
+app.use(mongoSanitize())
+app.use(helmet())
+app.use(xss())
+app.use(hpp())
+
+const limiter = rateLimit({
+  windowMs: 10 * 60 * 1000, // 10 minutes
+  max: 100,
+})
+
+app.use(limiter)
 
 // Socket
 
@@ -55,13 +70,14 @@ io.on('connection', function (socket) {
     io.to(room).emit('chat', msg)
   })
 
+  socket.on('videoCall', (data) => {
+    io.emit('videoCall', data)
+  })
+
   socket.on('disconnect', async () => {
     try {
       const index = listOfUsers.findIndex((user) => user.id === socket.id)
       if (index !== -1) {
-        await axios.patch(
-          `http://192.168.29.239:8000/api/v1/users/userOffline/${onlineUsers[index]}`
-        )
         // await axios.patch(
         //   `http://192.168.43.242:8000/api/v1/users/userOffline/${onlineUsers[index]}`
         // )
@@ -108,7 +124,7 @@ app.use(errorMid)
 
 const PORT = process.env.PORT || 8000
 
-server.listen(PORT, '192.168.29.239', () =>
+server.listen(PORT, '192.168.43.242', () =>
   console.log(`Server is running on port ${PORT}`)
 )
 // server.listen(PORT, () => console.log(`Server is running on port ${PORT}`))

@@ -10,8 +10,8 @@ const petSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Please add pet type'],
       enum: {
-        values: ['dog', 'cat', 'cattle', 'sheep/goat', 'poultry', 'other'],
-        message: 'Pet type is either: dog,cat,cattle,sheep/goat,poultry,other',
+        values: ['dog', 'cat', 'cattle', 'sheep/goat', 'poultry'],
+        message: 'Pet type is either: dog,cat,cattle,sheep/goat,poultry',
       },
     },
     photo: {
