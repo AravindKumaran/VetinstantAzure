@@ -74,6 +74,11 @@ io.on('connection', function (socket) {
     io.emit('videoCall', data)
   })
 
+  // socket.on('pendingCall', (data) => {
+  //   console.log('Data', data)
+  //   io.emit('pendingCall', data)
+  // })
+
   socket.on('disconnect', async () => {
     try {
       const index = listOfUsers.findIndex((user) => user.id === socket.id)
@@ -119,6 +124,7 @@ app.use('/api/v1/rooms', require('./routes/roomRoutes'))
 app.use('/api/v1/chats', require('./routes/chatRoutes'))
 app.use('/api/v1/calllogs', require('./routes/callLogRoutes'))
 app.use('/api/v1/scheduledCalls', require('./routes/scheduledCallRoutes'))
+app.use('/api/v1/pendingcalls', require('./routes/callPendingRoutes'))
 
 app.use(errorMid)
 
