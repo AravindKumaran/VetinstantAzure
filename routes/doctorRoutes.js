@@ -1,4 +1,5 @@
-const router = require('express').Router({ mergeParams: true })
+// const router = require('express').Router({ mergeParams: true })
+const router = require('express').Router()
 
 const {
   saveDoctorDetail,
@@ -16,7 +17,7 @@ router.use(protect)
 
 router
   .route('/')
-  .get(getAllDoctors)
+  .get(authorize('admin'), getAllDoctors)
   .post(authorize('doctor'), uploadPdfFile, saveDoctorDetail)
 
 router.route('/:id').get(getSingleDoctor)

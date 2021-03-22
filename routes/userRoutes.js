@@ -12,6 +12,7 @@ const {
   savePushToken,
   sendPushNotification,
   getPushToken,
+  userBlock,
 } = require('../controllers/userCtrl')
 
 const { protect, authorize } = require('../middleware/protect')
@@ -27,6 +28,8 @@ router.get(
 
 router.patch('/updateVet', protect, saveVet)
 router.patch('/userOffline/:id', userOffline)
+
+router.patch('/block/:id', protect, authorize('admin'), userBlock)
 
 router.patch('/saveToken', protect, savePushToken)
 router.get('/getPushToken/:id', protect, getPushToken)

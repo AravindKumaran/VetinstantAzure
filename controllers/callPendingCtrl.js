@@ -10,6 +10,19 @@ exports.saveCallPending = async (req, res, next) => {
   })
 }
 
+exports.getSingleCallPending = async (req, res, next) => {
+  const pendingCall = await CallPending.findById(req.params.id)
+
+  if (!pendingCall) {
+    return next(new AppError('Pending call not found!!', 404))
+  }
+
+  res.status(200).json({
+    status: 'success',
+    call: pendingCall,
+  })
+}
+
 exports.getCallPendingByUser = async (req, res, next) => {
   if (!req.params.userId) {
     return next(new AppError('Please provide user id', 404))
@@ -53,5 +66,24 @@ exports.updateCallPending = async (req, res, next) => {
   res.status(200).json({
     status: 'success',
     calls: pendingCall,
+  })
+}
+
+exports.deleteCallPending = async (req, res, next) => {
+  const pendingCall = await CallPending.findById(req.params.id)
+
+  if (!pendingCall) {
+    return next(new AppError('Pending call not found!!', 404))
+  }
+
+  if (!pendingCall.userJoined && !pendingCall.docJoined) {
+    return next(new AppError('Failed to delete pending call!!', 400))
+  }
+
+  await pendingCall.remove()
+
+  res.status(200).json({
+    status: 'success',
+    msg: 'Pending Call Deleted!',
   })
 }

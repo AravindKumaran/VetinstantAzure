@@ -27,20 +27,34 @@ const upload = multer({
 
 exports.uploadPdfFile = upload.fields([{ name: 'file', maxCount: 1 }])
 
-exports.getAllDoctors = async (req, res, next) => {
-  let query
-
-  if (req.params.hospitalId) {
-    query = Doctor.find({ hospital: req.params.hospitalId }).populate({
-      path: 'user',
-    })
-  } else {
-    query = Doctor.find({}).populate({
-      path: 'user',
-    })
+exports.getHospitalDoctors = async (req, res, next) => {
+  if (!req.params.hospitalId) {
+    return next(new AppError('Please provide hospital Id', 400))
   }
 
-  const doctors = await query
+  const doctors = await Doctor.find({
+    hospital: req.params.hospitalId,
+  }).populate({
+    path: 'user',
+  })
+
+  res.status(200).json({
+    status: 'success',
+    count: doctors.length,
+    doctors,
+  })
+}
+exports.getAllDoctors = async (req, res, next) => {
+  const doctors = await Doctor.find({}).populate([
+    {
+      path: 'user',
+      select: '_id name block emailID',
+    },
+    {
+      path: 'hospital',
+      select: '_id name block',
+    },
+  ])
 
   res.status(200).json({
     status: 'success',

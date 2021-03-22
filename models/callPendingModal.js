@@ -20,6 +20,14 @@ const callPendingSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    userJoined: {
+      type: Boolean,
+      default: false,
+    },
+    docJoined: {
+      type: Boolean,
+      default: false,
+    },
     userName: {
       type: String,
       required: [true, 'Please provide username'],

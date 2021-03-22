@@ -53,6 +53,10 @@ const userSchema = new mongoose.Schema(
       type: mongoose.Schema.ObjectId,
     },
     isOnline: Boolean,
+    block: {
+      type: Boolean,
+      default: false,
+    },
     resetPasswordToken: String,
     resetPasswordExpire: Date,
   },

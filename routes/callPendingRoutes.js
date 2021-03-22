@@ -5,6 +5,8 @@ const {
   getCallPendingByUser,
   updateCallPending,
   getCallPendingByDoctor,
+  getSingleCallPending,
+  deleteCallPending,
 } = require('../controllers/callPendingCtrl')
 
 const { protect, authorize } = require('../middleware/protect')
@@ -16,6 +18,10 @@ router.get('/doctor/:userId', getCallPendingByDoctor)
 
 router.route('/').post(saveCallPending)
 
-router.route('/:id').patch(updateCallPending)
+router
+  .route('/:id')
+  .patch(updateCallPending)
+  .get(getSingleCallPending)
+  .delete(deleteCallPending)
 
 module.exports = router
