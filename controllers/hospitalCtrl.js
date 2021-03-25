@@ -23,11 +23,11 @@ exports.hospitalBlock = async (req, res, next) => {
 
   await hosp.save()
 
-  console.log('Hosp', hosp)
+  console.log('Hosp', hosp, hosp.block)
 
   if (hosp.block === true) {
     const users = await User.updateMany(
-      { hospitalId: hosp._id },
+      { hospitalId: hosp._id, role: 'doctor' },
       {
         $set: { block: true },
       }
@@ -38,7 +38,7 @@ exports.hospitalBlock = async (req, res, next) => {
     console.log('users', users)
   } else if (hosp.block === false) {
     const users = await User.updateMany(
-      { hospitalId: hosp._id },
+      { hospitalId: hosp._id, role: 'doctor' },
       {
         $set: { block: false },
       }

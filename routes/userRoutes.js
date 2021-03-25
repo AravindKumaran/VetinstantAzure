@@ -13,6 +13,7 @@ const {
   sendPushNotification,
   getPushToken,
   userBlock,
+  updateDoctorHosp,
 } = require('../controllers/userCtrl')
 
 const { protect, authorize } = require('../middleware/protect')
@@ -27,6 +28,12 @@ router.get(
 )
 
 router.patch('/updateVet', protect, saveVet)
+router.patch(
+  '/updateDoctorHosp',
+  protect,
+  authorize('doctor'),
+  updateDoctorHosp
+)
 router.patch('/userOffline/:id', userOffline)
 
 router.patch('/block/:id', protect, authorize('admin'), userBlock)

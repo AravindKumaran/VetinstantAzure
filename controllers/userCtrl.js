@@ -106,6 +106,28 @@ exports.saveVet = async (req, res, next) => {
   }
 }
 
+exports.updateDoctorHosp = async (req, res, next) => {
+  const { hospitalId } = req.body
+
+  if (hospitalId && req.user.role === 'doctor') {
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      {
+        hospitalId,
+      },
+      { new: true }
+    )
+    res.status(200).json({
+      status: 'success',
+      user,
+    })
+  } else {
+    res.status(200).json({
+      status: 'success',
+    })
+  }
+}
+
 exports.payDoctor = async (req, res, next) => {
   const { amt } = req.body
 
