@@ -12,14 +12,12 @@ const { protect, authorize } = require('../middleware/protect')
 
 // const doctorRouter = require('./doctorRoutes')
 
+router.route('/').get(getAllHospitals).post(protect, saveHospitalName)
+
 router.use(protect)
-// router.use(authorize('doctor'))
 
 router.use('/:hospitalId/doctors', getHospitalDoctors)
 router.patch('/block/:id', authorize('admin'), hospitalBlock)
-
-router.route('/').get(getAllHospitals).post(saveHospitalName)
-
 router.route('/:id').get(getSingleHospital)
 
 module.exports = router

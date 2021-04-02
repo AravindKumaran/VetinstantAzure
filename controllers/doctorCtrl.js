@@ -102,7 +102,11 @@ exports.getDoctorDetail = async (req, res, next) => {
 }
 
 exports.saveDoctorDetail = async (req, res, next) => {
-  const { accno, accname, acctype, ifsc, fee } = req.body
+  const { accno, accname, acctype, ifsc, fee, reqUser } = req.body
+
+  // if (reqUser) {
+  //   req.user = reqUser
+  // }
 
   if (fee > 0 && !accno && !accname && !acctype && !ifsc) {
     return next(new AppError('Please provide the values', 400))

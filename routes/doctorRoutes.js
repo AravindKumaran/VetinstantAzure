@@ -15,10 +15,9 @@ const { protect, authorize } = require('../middleware/protect')
 
 router.use(protect)
 
-router
-  .route('/')
-  .get(authorize('admin'), getAllDoctors)
-  .post(authorize('doctor'), uploadPdfFile, saveDoctorDetail)
+router.route('/').get(authorize('admin'), getAllDoctors)
+
+router.post('/', authorize('doctor'), uploadPdfFile, saveDoctorDetail)
 
 router.route('/:id').get(getSingleDoctor)
 
