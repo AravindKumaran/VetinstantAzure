@@ -46,6 +46,10 @@ const userSchema = new mongoose.Schema(
       },
     },
 
+    webToken: {
+      type: String,
+    },
+
     hospitalId: {
       type: mongoose.Schema.ObjectId,
     },

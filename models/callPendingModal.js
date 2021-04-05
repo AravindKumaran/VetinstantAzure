@@ -5,6 +5,12 @@ const callPendingSchema = new mongoose.Schema(
     extraInfo: {
       type: String,
     },
+    webToken: {
+      type: String,
+    },
+    mobToken: {
+      type: String,
+    },
     docName: {
       type: String,
       required: [true, 'Please provide doctor name'],
