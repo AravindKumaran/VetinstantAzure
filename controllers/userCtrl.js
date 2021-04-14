@@ -7,7 +7,6 @@ const twilio = require('twilio')
 const AccessToken = twilio.jwt.AccessToken
 const VideoGrant = AccessToken.VideoGrant
 const { Expo } = require('expo-server-sdk')
-const { sendNotificationToClient } = require('../utils/notify')
 
 let rzp = new Razorpay({
   key_id: `${process.env.KEY_ID}`,
@@ -293,39 +292,4 @@ exports.sendPushNotification = async (req, res, next) => {
   await sendChunks()
 
   res.send('Done')
-}
-
-exports.sendWebPushNotification = async (req, res, next) => {
-  const { webToken, body, title, datas } = req.body
-
-  if (!webToken || !title || !body) {
-    return next(new AppError('Please provide required details', 400))
-  }
-
-  sendNotificationToClient(webToken, { title, body })
-
-  res.status(200).json({
-    status: 'success',
-  })
-}
-
-exports.saveWebPushToken = async (req, res, next) => {
-  const user = await User.findById(req.user._id)
-
-  if (!user) {
-    return next(new AppError('User not found!', 404))
-  }
-
-  if (!user.webToken) {
-    user.webToken = req.body.webToken
-    await user.save()
-  } else if (user.webToken && user.webToken !== req.body.webToken) {
-    user.webToken = req.body.webToken
-    await user.save()
-  }
-
-  res.status(200).json({
-    success: true,
-    user,
-  })
 }
