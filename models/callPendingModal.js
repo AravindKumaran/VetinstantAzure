@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const { Expo } = require('expo-server-sdk')
 
 const callPendingSchema = new mongoose.Schema(
   {
@@ -42,6 +43,24 @@ const callPendingSchema = new mongoose.Schema(
     status: {
       type: String,
       required: [true, 'Please provide status'],
+    },
+    docMobToken: {
+      type: String,
+      validate: {
+        validator: function (tkn) {
+          return Expo.isExpoPushToken(tkn)
+        },
+        message: 'Doc Token is not valid!',
+      },
+    },
+    userMobToken: {
+      type: String,
+      validate: {
+        validator: function (tkn) {
+          return Expo.isExpoPushToken(tkn)
+        },
+        message: 'User Token is not valid!',
+      },
     },
   },
   { timestamps: true }
