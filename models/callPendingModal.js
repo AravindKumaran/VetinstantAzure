@@ -14,6 +14,10 @@ const callPendingSchema = new mongoose.Schema(
       type: mongoose.Schema.ObjectId,
       required: [true, 'Please provide doctor id'],
     },
+    hospId: {
+      type: mongoose.Schema.ObjectId,
+      required: [true, 'Please provide hospital id'],
+    },
     docFee: {
       type: Number,
     },
