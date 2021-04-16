@@ -7,6 +7,7 @@ const {
   getCallPendingByDoctor,
   getSingleCallPending,
   deleteCallPending,
+  deleteCallPendingAfter,
 } = require('../controllers/callPendingCtrl')
 
 const { protect, authorize } = require('../middleware/protect')
@@ -17,6 +18,8 @@ router.get('/user/:userId', getCallPendingByUser)
 router.get('/doctor/:userId', getCallPendingByDoctor)
 
 router.route('/').post(saveCallPending)
+
+router.delete('/after/:id', deleteCallPendingAfter)
 
 router
   .route('/:id')

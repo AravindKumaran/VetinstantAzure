@@ -62,6 +62,9 @@ const callPendingSchema = new mongoose.Schema(
         message: 'User Token is not valid!',
       },
     },
+    deleteAfter: {
+      type: Date,
+    },
   },
   { timestamps: true }
 )

@@ -87,3 +87,16 @@ exports.deleteCallPending = async (req, res, next) => {
     msg: 'Pending Call Deleted!',
   })
 }
+
+exports.deleteCallPendingAfter = async (req, res, next) => {
+  const pendingCall = await CallPending.findById(req.params.id)
+
+  if (pendingCall) {
+    await pendingCall.remove()
+  }
+
+  res.status(200).json({
+    status: 'success',
+    msg: 'Pending Call Deleted!',
+  })
+}
