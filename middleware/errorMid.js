@@ -1,4 +1,5 @@
 const AppError = require('../utils/AppError')
+// const fs = require('fs')
 
 const errorMid = (err, req, res, next) => {
   // fs.writeFileSync('./abc.text', `${JSON.stringify(err)}\n\n`, { flag: 'a' })

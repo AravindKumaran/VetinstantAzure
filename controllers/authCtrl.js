@@ -17,7 +17,19 @@ exports.signup = async (req, res, next) => {
     return next(new AppError('Email already taken!', 400))
   }
 
-  const newUser = await User.create({ name, emailID, password, role })
+  let block = false
+
+  if (role === 'doctor') {
+    block = true
+  }
+
+  const newUser = await User.create({ name, emailID, password, role, block })
+
+  // console.log('New User', newUser)
+  // let token = ''
+  // if (!newUser.block) {
+  //   token = signToken(newUser._id)
+  // }
 
   const token = signToken(newUser._id)
 
@@ -63,12 +75,20 @@ exports.googleAuth = async (req, res, next) => {
 
   let exUser = await User.findOne({ emailID })
 
+  if (exUser) {
+    return next(new AppError('Email already taken!', 400))
+  }
+
   if (!exUser) {
-    exUser = await User.create({ name, emailID, password, role })
+    let block = false
+
+    if (role === 'doctor') {
+      block = true
+    }
+    exUser = await User.create({ name, emailID, password, role, block })
   }
 
   const token = signToken(exUser._id)
-
   res.status(201).json({
     status: 'success',
     token,

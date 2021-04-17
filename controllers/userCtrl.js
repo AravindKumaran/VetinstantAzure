@@ -35,6 +35,10 @@ exports.getUsersByDoctorId = async (req, res, next) => {
 }
 
 exports.getMe = async (req, res, next) => {
+  // console.log('Req', req.user)
+  if (req.user.block === true) {
+    return next(new AppError("You're blocked! Please contact admin", 403))
+  }
   const user = await User.findByIdAndUpdate(
     req.user._id,
     { isOnline: true },
@@ -44,6 +48,22 @@ exports.getMe = async (req, res, next) => {
   res.status(200).json({
     status: 'success',
     user,
+  })
+}
+
+exports.userBlock = async (req, res, next) => {
+  const user = await User.findById(req.params.id)
+
+  if (!user) {
+    return next(new AppError('User not found', 404))
+  }
+
+  user.block = !user.block
+
+  await user.save()
+
+  return res.status(200).json({
+    status: 'success',
   })
 }
 
@@ -72,6 +92,32 @@ exports.saveVet = async (req, res, next) => {
       {
         hospitalId,
         doctorId,
+      },
+      { new: true }
+    )
+    res.status(200).json({
+      status: 'success',
+      user,
+    })
+  } else {
+    res.status(200).json({
+      status: 'success',
+    })
+  }
+}
+
+exports.updateDoctorHosp = async (req, res, next) => {
+  const { hospitalId, reqUser } = req.body
+
+  // if (reqUser) {
+  //   req.user = reqUser
+  // }
+
+  if (hospitalId && req.user.role === 'doctor') {
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      {
+        hospitalId,
       },
       { new: true }
     )

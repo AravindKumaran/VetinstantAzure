@@ -1,4 +1,5 @@
-const router = require('express').Router({ mergeParams: true })
+// const router = require('express').Router({ mergeParams: true })
+const router = require('express').Router()
 
 const {
   saveDoctorDetail,
@@ -14,10 +15,9 @@ const { protect, authorize } = require('../middleware/protect')
 
 router.use(protect)
 
-router
-  .route('/')
-  .get(getAllDoctors)
-  .post(authorize('doctor'), uploadPdfFile, saveDoctorDetail)
+router.route('/').get(authorize('admin'), getAllDoctors)
+
+router.post('/', authorize('doctor'), uploadPdfFile, saveDoctorDetail)
 
 router.route('/:id').get(getSingleDoctor)
 

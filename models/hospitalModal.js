@@ -9,8 +9,19 @@ const hospitalSchema = new mongoose.Schema(
       unique: true,
       maxlength: [100, 'Hospital name must be less than 100 characters'],
     },
+    block: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 )
+
+// hospitalSchema.post('save', async function (next) {
+//   if(this.block===true){
+
+//   }else if(this.block === false)
+//   next()
+// })
 
 module.exports = mongoose.model('Hospital', hospitalSchema)
