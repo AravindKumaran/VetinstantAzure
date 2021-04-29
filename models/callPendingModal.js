@@ -43,6 +43,11 @@ const callPendingSchema = new mongoose.Schema(
     },
     petId: {
       type: mongoose.Schema.ObjectId,
+      required: [true, 'Please provide pet id'],
+    },
+    petName: {
+      type: String,
+      required: [true, 'Please provide pet name'],
     },
     status: {
       type: String,
