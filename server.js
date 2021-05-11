@@ -19,7 +19,7 @@ const app = express()
 const errorMid = require('./middleware/errorMid')
 
 mongoose
-  .connect(process.env.LOCAL_MONGO_URL, {
+  .connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
@@ -130,7 +130,7 @@ app.use(errorMid)
 
 const PORT = process.env.PORT || 8000
 
-server.listen(PORT, '192.168.43.242', () =>
-  console.log(`Server is running on port ${PORT}`)
-)
-// server.listen(PORT, () => console.log(`Server is running on port ${PORT}`))
+// server.listen(PORT, '192.168.43.242', () =>
+//   console.log(`Server is running on port ${PORT}`)
+// )
+server.listen(PORT, () => console.log(`Server is running on port ${PORT}`))
