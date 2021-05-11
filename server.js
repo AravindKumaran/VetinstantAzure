@@ -33,7 +33,7 @@ mongoose.connect(process.env.MONGO_URL, {
   useNewUrlParser: true,
   ssl: true,
   sslValidate: false,
-  sslCA: fs.readFileSync('./rds-combined-ca-bundle.pem.1')})
+  sslCA: fs.readFileSync('./rds-combined-ca-bundle.pem')})
 .then(() => console.log('Connection to DB successful'))
 .catch((err) => console.error(err,'Error'));
 
