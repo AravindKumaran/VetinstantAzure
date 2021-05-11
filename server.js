@@ -137,6 +137,10 @@ app.use('/api/v1/pendingcalls', require('./routes/callPendingRoutes'))
 
 app.use(errorMid)
 
+app.get('/', (req, res) => {
+  res.send('Hi there! Welcome to Vetinstance App!')
+});
+
 const PORT = process.env.PORT || 8000
 
 // server.listen(PORT, '192.168.43.242', () =>
