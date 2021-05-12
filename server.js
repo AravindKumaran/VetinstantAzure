@@ -19,23 +19,23 @@ const app = express()
 
 const errorMid = require('./middleware/errorMid')
 
-// mongoose
-//   .connect(process.env.MONGO_URL, {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-//     useCreateIndex: true,
-//     useFindAndModify: false,
-//   })
-//   .then((con) => console.log(`Database Connected at ${con.connection.host}`))
-//   .catch((err) => console.log(err))
+mongoose
+  .connect(process.env.MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
+  })
+  .then((con) => console.log(`Database Connected at ${con.connection.host}`))
+  .catch((err) => console.log(err))
 
-mongoose.connect(process.env.MONGO_URL, {
-  useNewUrlParser: true,
-  ssl: true,
-  sslValidate: false,
-  sslCA: fs.readFileSync('./rds-combined-ca-bundle.pem')})
-.then(() => console.log('Connection to DB successful'))
-.catch((err) => console.error(err,'Error'));
+// mongoose.connect(process.env.MONGO_URL, {
+//   useNewUrlParser: true,
+//   ssl: true,
+//   sslValidate: false,
+//   sslCA: fs.readFileSync('./rds-combined-ca-bundle.pem')})
+// .then(() => console.log('Connection to DB successful'))
+// .catch((err) => console.error(err,'Error'));
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -143,7 +143,8 @@ app.get('/', (req, res) => {
 
 const PORT = process.env.PORT || 8000
 
-// server.listen(PORT, '192.168.43.242', () =>
-//   console.log(`Server is running on port ${PORT}`)
-// )
+server.listen(PORT, '192.168.29.240', () =>
+  console.log(`Server is running on port ${PORT}`)
+)
+
 server.listen(PORT, () => console.log(`Server is running on port ${PORT}`))
