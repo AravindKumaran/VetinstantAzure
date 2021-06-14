@@ -1,19 +1,9 @@
 const Pet = require("../models/petModal");
 const AppError = require("../utils/AppError");
 const multer = require("multer");
-const MulterAzureStorage = require("multer-azure-storage");
 const sharp = require("sharp");
 const { nanoid } = require("nanoid");
 const fs = require("fs");
-
-const azureMulterStorage = new MulterAzureStorage({
-  azureStorageConnectionString: process.env.AZURE_CONN_STRING,
-  azureStorageAccount: process.env.AZURE_STR_ACC,
-  azureStorageAccessKey: process.env.AZURE_STR_ACC_KEY,
-  containerName: "photos",
-  containerSecurity: "blob",
-  // fileName: (file) => `1.png`,
-});
 
 const multerFilter2 = (req, file, cb) => {
   if (file.mimetype.startsWith("image")) {
@@ -27,14 +17,11 @@ const multerFilter2 = (req, file, cb) => {
 };
 
 const upload = multer({
-  storage: azureMulterStorage,
   fileFilter: multerFilter2,
 });
 exports.uploadPetPhoto = upload.single("photo");
 
-const multipleUpload = multer({
-  storage: azureMulterStorage,
-});
+const multipleUpload = multer({});
 
 exports.uploadMultiplePhoto = multipleUpload.fields([
   { name: "photo", maxCount: 1 },
