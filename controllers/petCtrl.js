@@ -1,9 +1,19 @@
 const Pet = require("../models/petModal");
 const AppError = require("../utils/AppError");
 const multer = require("multer");
+const MulterAzureStorage = require("multer-azure-storage");
 const sharp = require("sharp");
 const { nanoid } = require("nanoid");
 const fs = require("fs");
+
+const azureMulterStorage = new MulterAzureStorage({
+  azureStorageConnectionString: process.env.AZURE_CONN_STRING,
+  azureStorageAccount: process.env.AZURE_STR_ACC,
+  azureStorageAccessKey: process.env.AZURE_STR_ACC_KEY,
+  containerName: "photos",
+  containerSecurity: "blob",
+  // fileName: (file) => `1.png`,
+});
 
 const multerFilter2 = (req, file, cb) => {
   if (file.mimetype.startsWith("image")) {
@@ -17,11 +27,15 @@ const multerFilter2 = (req, file, cb) => {
 };
 
 const upload = multer({
+  storage: azureMulterStorage,
   fileFilter: multerFilter2,
 });
 exports.uploadPetPhoto = upload.single("photo");
 
-const multipleUpload = multer({});
+const multipleUpload = multer({
+  //storage: azureMulterStorage,
+  dest: 'uploads/'
+});
 
 exports.uploadMultiplePhoto = multipleUpload.fields([
   { name: "photo", maxCount: 1 },
@@ -29,6 +43,7 @@ exports.uploadMultiplePhoto = multipleUpload.fields([
 ]);
 
 exports.getAllPets = async (req, res, next) => {
+  console.log('getAllPets')
   await req.user.populate("pets").execPopulate();
   const pets = req.user.pets;
   res.status(200).json({
@@ -52,6 +67,8 @@ exports.getSinglePet = async (req, res, next) => {
 };
 
 exports.createPet = async (req, res, next) => {
+  console.log('create pet called', req);
+
   if (!req.files.photo) {
     return next(new AppError("Please select an image", 400));
   }
@@ -62,6 +79,7 @@ exports.createPet = async (req, res, next) => {
   }
 
   if (req.files.photo) {
+    console.log('photo', req.files.photo[0])
     values.push(req.files.photo[0]);
   }
 
@@ -80,7 +98,8 @@ exports.createPet = async (req, res, next) => {
     }
     req.body.petHistoryImages = petImages;
   }
-  req.body.photo = req.files.photo[0].url;
+  //req.body.photo = req.files.photo[0].url;
+  req.body.photo = 'localhost:8000/uploads/'+req.files.photo[0].filename;
   req.body.owner = req.user._id;
   const newPet = await Pet.create(req.body);
   res.status(201).json({
