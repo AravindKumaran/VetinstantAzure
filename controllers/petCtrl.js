@@ -1,19 +1,9 @@
 const Pet = require("../models/petModal");
 const AppError = require("../utils/AppError");
 const multer = require("multer");
-const MulterAzureStorage = require("multer-azure-storage");
 const sharp = require("sharp");
 const { nanoid } = require("nanoid");
 const fs = require("fs");
-
-const azureMulterStorage = new MulterAzureStorage({
-  azureStorageConnectionString: process.env.AZURE_CONN_STRING,
-  azureStorageAccount: process.env.AZURE_STR_ACC,
-  azureStorageAccessKey: process.env.AZURE_STR_ACC_KEY,
-  containerName: "photos",
-  containerSecurity: "blob",
-  // fileName: (file) => `1.png`,
-});
 
 const multerFilter2 = (req, file, cb) => {
   if (file.mimetype.startsWith("image")) {
@@ -27,7 +17,8 @@ const multerFilter2 = (req, file, cb) => {
 };
 
 const upload = multer({
-  storage: azureMulterStorage,
+  // storage: azureMulterStorage,
+  dest: 'uploads/',
   fileFilter: multerFilter2,
 });
 exports.uploadPetPhoto = upload.single("photo");
@@ -39,7 +30,7 @@ const multipleUpload = multer({
 
 exports.uploadMultiplePhoto = multipleUpload.fields([
   { name: "photo", maxCount: 1 },
-  { name: "images" },
+  // { name: "images" },
 ]);
 
 exports.getAllPets = async (req, res, next) => {
@@ -74,9 +65,9 @@ exports.createPet = async (req, res, next) => {
   }
 
   let values = [];
-  if (req.files.images) {
-    values = Object.values(req.files.images);
-  }
+  // if (req.files.images) {
+  //   values = Object.values(req.files.images);
+  // }
 
   if (req.files.photo) {
     console.log('photo', req.files.photo[0])
@@ -91,13 +82,13 @@ exports.createPet = async (req, res, next) => {
     }
   }
 
-  if (req.files.images) {
-    const petImages = [];
-    for (let i = 0; i < req.files.images.length; i++) {
-      petImages.push(req.files.images[i].url);
-    }
-    req.body.petHistoryImages = petImages;
-  }
+  // if (req.files.images) {
+  //   const petImages = [];
+  //   for (let i = 0; i < req.files.images.length; i++) {
+  //     petImages.push(req.files.images[i].url);
+  //   }
+  //   req.body.petHistoryImages = petImages;
+  // }
   //req.body.photo = req.files.photo[0].url;
   req.body.photo = 'localhost:8000/uploads/'+req.files.photo[0].filename;
   req.body.owner = req.user._id;
@@ -118,7 +109,8 @@ exports.updatePet = async (req, res, next) => {
         new AppError("Please select an image with size less than 1mb", 400)
       );
     }
-    req.body.photo = req.files.photo[0].url;
+    // req.body.photo = req.files.photo[0].url;
+    req.body.photo = 'localhost:8000/uploads/'+req.files.photo[0].filename;
   }
 
   const existingPet = await Pet.findByIdAndUpdate(req.params.id, req.body, {
