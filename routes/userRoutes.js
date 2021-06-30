@@ -1,6 +1,7 @@
 const router = require('express').Router()
 
 const {
+  uploadImage,
   getAllUsers,
   getMe,
   saveVet,
@@ -32,6 +33,7 @@ router.patch(
   '/updateDoctorHosp',
   protect,
   authorize('doctor'),
+  uploadImage,
   updateDoctorHosp
 )
 router.patch('/userOffline/:id', userOffline)

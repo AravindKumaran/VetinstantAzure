@@ -76,7 +76,13 @@ exports.saveHospitalName = async (req, res, next) => {
     return next(new AppError('Hospital name already exists!', 404))
   }
 
-  const newHospital = await Hospital.create(req.body)
+  const { name, address } = req.body;
+
+  if(!name || !address) {
+    return next(new AppError('Fields missing!', 400))
+  }
+
+  const newHospital = await Hospital.create({ name, address });
 
   res.status(201).json({
     status: 'success',

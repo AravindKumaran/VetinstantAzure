@@ -20,8 +20,24 @@ const multerFilter = (req, file, cb) => {
   }
 }
 
+// const upload = multer({
+//   storage: azureMulterStorage,
+//   fileFilter: multerFilter,
+// })
+
+var storage = multer.diskStorage({
+  destination: function (request, file, callback) {
+      console.log('file in destination', file)
+      callback(null, 'uploads/');
+  },
+  filename: function (request, file, callback) {
+      console.log('file', file);
+      callback(null, 'doctors_pdf_' + file.originalname + '_' + Date.now() + '.' + file.mimetype.split('/')[1])
+  }
+});
+
 const upload = multer({
-  storage: azureMulterStorage,
+  storage,
   fileFilter: multerFilter,
 })
 
@@ -102,11 +118,13 @@ exports.getDoctorDetail = async (req, res, next) => {
 }
 
 exports.saveDoctorDetail = async (req, res, next) => {
-  const { accno, accname, acctype, ifsc, fee, reqUser } = req.body
+  const { accno, accname, acctype, ifsc, fee, reqUser, hospital } = req.body
 
   // if (reqUser) {
   //   req.user = reqUser
   // }
+
+  console.log('request body', req.body)
 
   if (fee > 0 && !accno && !accname && !acctype && !ifsc) {
     return next(new AppError('Please provide the values', 400))
@@ -130,8 +148,9 @@ exports.saveDoctorDetail = async (req, res, next) => {
     return next(new AppError('You have already added your details!', 400))
   }
 
-  req.body.file = req.files.file[0].url
+  req.body.file = req.files.file[0].path.replace('\\', '/')
   req.body.user = req.user.id
+
   const newDetails = await Doctor.create(req.body)
   res.status(201).json({
     status: 'success',

@@ -13,6 +13,10 @@ const hospitalSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    address: {
+      type: String,
+      required: [true, 'Please add hospital/clinic address']
+    }
   },
   { timestamps: true }
 )

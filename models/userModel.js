@@ -45,7 +45,9 @@ const userSchema = new mongoose.Schema(
         message: 'Token is not valid!',
       },
     },
-
+    profile_image: {
+      type: String
+    },
     hospitalId: {
       type: mongoose.Schema.ObjectId,
     },
