@@ -1,3 +1,4 @@
+const multer = require('multer')
 const User = require('../models/userModel')
 const AppError = require('../utils/AppError')
 const Razorpay = require('razorpay')
@@ -12,6 +13,33 @@ let rzp = new Razorpay({
   key_id: `${process.env.KEY_ID}`,
   key_secret: `${process.env.KEY_SECRET}`,
 })
+
+const multerFilter = (req, file, cb) => {
+  if (file.mimetype == "image/png" || file.mimetype == "image/jpg" || file.mimetype == "image/jpeg") {
+    cb(null, true);
+  } else {
+    cb(null, false);
+    return cb(new Error('Only .png, .jpg and .jpeg format allowed!'));
+  }
+}
+
+var storage = multer.diskStorage({
+  destination: function (request, file, callback) {
+    console.log('image file', file)
+      callback(null, 'uploads/');
+  },
+  filename: function (request, file, callback) {
+      console.log(file);
+      callback(null, 'users_profile_' + file.originalname + '_' + Date.now() + '.' + file.mimetype.split('/')[1])
+  }
+});
+
+const upload = multer({
+  storage,
+  fileFilter: multerFilter,
+})
+
+exports.uploadImage = upload.single('image')
 
 exports.getAllUsers = async (req, res, next) => {
   const allUsers = await User.find({})
@@ -47,7 +75,7 @@ exports.getMe = async (req, res, next) => {
 
   res.status(200).json({
     status: 'success',
-    user,
+    user
   })
 }
 
@@ -107,18 +135,30 @@ exports.saveVet = async (req, res, next) => {
 }
 
 exports.updateDoctorHosp = async (req, res, next) => {
-  const { hospitalId, reqUser } = req.body
+  const { hospitalId, name, reqUser } = req.body
+
+  console.log('updateDoctorHosp', req.body)
 
   // if (reqUser) {
   //   req.user = reqUser
   // }
+  let updateUser = {
+    hospitalId
+  }
+
+  if(name) {
+    updateUser.name = name;
+  }
+
+  //add profile image
+  if(req.file) {
+    updateUser.profile_image = req.file.path.replace('\\', '/');
+  }
 
   if (hospitalId && req.user.role === 'doctor') {
     const user = await User.findByIdAndUpdate(
       req.user.id,
-      {
-        hospitalId,
-      },
+      updateUser,
       { new: true }
     )
     res.status(200).json({
@@ -128,6 +168,7 @@ exports.updateDoctorHosp = async (req, res, next) => {
   } else {
     res.status(200).json({
       status: 'success',
+      msg: req.body
     })
   }
 }

@@ -76,6 +76,11 @@ exports.googleAuth = async (req, res, next) => {
   let exUser = await User.findOne({ emailID })
 
   if (exUser) {
+    const token = signToken(exUser._id)
+    return res.status(400).json({
+      msg: 'Email already taken!',
+      token,
+    })
     return next(new AppError('Email already taken!', 400))
   }
 
