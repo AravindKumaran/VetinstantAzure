@@ -18,14 +18,14 @@ const multerFilter2 = (req, file, cb) => {
 
 const upload = multer({
   // storage: azureMulterStorage,
-  dest: 'uploads/',
+  dest: 'public/uploads/',
   fileFilter: multerFilter2,
 });
 exports.uploadPetPhoto = upload.single("photo");
 
 const multipleUpload = multer({
   //storage: azureMulterStorage,
-  dest: 'uploads/'
+  dest: 'public/uploads/'
 });
 
 exports.uploadMultiplePhoto = multipleUpload.fields([
@@ -129,6 +129,7 @@ exports.updatePet = async (req, res, next) => {
 };
 
 exports.petProblems = async (req, res, next) => {
+  console.log('petProblems', req.body);
   if (req.files.images) {
     let values = Object.values(req.files.images);
     for (let i = 0; i < values.length; i++) {

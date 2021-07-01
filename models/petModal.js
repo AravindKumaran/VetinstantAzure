@@ -62,10 +62,10 @@ const petSchema = new mongoose.Schema(
           type: Number,
           required: [true, "choose the problem period(days)"],
         },
-        comment: {
-          type: String,
-          required: [true, "Please enter the Comment"],
-        },
+        // comment: {
+        //   type: String,
+        //   required: [true, "Please enter the Comment"],
+        // },
         Appetite: {
           type: String,
           required: [true, "Please enter the Appetite"],
