@@ -1,7 +1,28 @@
 const Chat = require('../models/chatModal')
 const AppError = require('../utils/AppError')
+const multer = require("multer");
+
+const multipleUpload = multer({
+  dest: 'public/uploads/'
+});
+
+exports.uploadMultipleFiles = multipleUpload.fields([
+  { name: "chatFiles" },
+]);
 
 exports.saveChat = async (req, res, next) => {
+
+  console.log('req', req);
+
+  if (req?.files?.chatFiles) {
+    const chatFilesArr = [];
+    for (let i = 0; i < req.files.chatFiles.length; i++) {
+      // chatFilesArr.push(req.files.chatFiles[i].url);
+      chatFilesArr.push(req.files.chatFiles[i]);
+    }
+    req.body.chatFiles = chatFilesArr;
+  }  
+
   const newChat = await Chat.create(req.body)
 
   res.status(201).json({

@@ -4,7 +4,7 @@ const chatSchema = new mongoose.Schema(
   {
     text: {
       type: String,
-      required: [true, 'Please enter text'],
+      // required: [true, 'Please enter text'],
     },
     userId: {
       type: String,
@@ -22,6 +22,7 @@ const chatSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Please enter pet id'],
     },
+    chatFiles: [{}]
   },
   { timestamps: true }
 )
