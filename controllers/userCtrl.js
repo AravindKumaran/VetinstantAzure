@@ -137,8 +137,6 @@ exports.saveVet = async (req, res, next) => {
 exports.updateDoctorHosp = async (req, res, next) => {
   const { hospitalId, name, reqUser } = req.body
 
-  console.log('updateDoctorHosp', req.body)
-
   // if (reqUser) {
   //   req.user = reqUser
   // }

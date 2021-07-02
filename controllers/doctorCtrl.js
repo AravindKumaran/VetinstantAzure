@@ -124,8 +124,6 @@ exports.saveDoctorDetail = async (req, res, next) => {
   //   req.user = reqUser
   // }
 
-  console.log('request body', req.body)
-
   if (fee > 0 && !accno && !accname && !acctype && !ifsc) {
     return next(new AppError('Please provide the values', 400))
   }
@@ -155,6 +153,49 @@ exports.saveDoctorDetail = async (req, res, next) => {
   res.status(201).json({
     status: 'success',
     newDetails,
+  })
+}
+
+exports.updateDoctorDetail = async (req, res, next) => {
+  const { accno, accname, acctype, ifsc, fee, reqUser, qlf } = req.body;
+  const doctorId = req.params.id;
+  console.log(req.body)
+  console.log('doctorID', doctorId)
+
+  // if (reqUser) {
+  //   req.user = reqUser
+  // }
+
+  // if (fee > 0 && !accno && !accname && !acctype && !ifsc) {
+  //   return next(new AppError('Please provide the values', 400))
+  // }
+
+  // if (!req.files.file) {
+  //   return next(new AppError('Please select a file of .pdf file', 400))
+  // }
+
+  if(req.files.file) {
+    if (req.files.file[0].size > 1000000) {
+      return next(
+        new AppError(
+          'Please select a file of .pdf file of size less than 1Mb',
+          400
+        )
+      )
+    }
+    req.body.file = req.files.file[0].path.replace('\\', '/')
+  }
+
+  req.body.user = req.user.id
+
+  const updatedDetails = await Doctor.findByIdAndUpdate(
+    doctorId,
+    req.body,
+    { new: true }
+  )
+  res.status(200).json({
+    status: 'success',
+    updatedDetails,
   })
 }
 
