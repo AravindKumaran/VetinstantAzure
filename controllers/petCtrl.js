@@ -18,14 +18,14 @@ const multerFilter2 = (req, file, cb) => {
 
 const upload = multer({
   // storage: azureMulterStorage,
-  dest: 'public/uploads/',
+  dest: "public/uploads/",
   fileFilter: multerFilter2,
 });
 exports.uploadPetPhoto = upload.single("photo");
 
 const multipleUpload = multer({
   //storage: azureMulterStorage,
-  dest: 'public/uploads/'
+  dest: "public/uploads/",
 });
 
 exports.uploadMultiplePhoto = multipleUpload.fields([
@@ -34,7 +34,7 @@ exports.uploadMultiplePhoto = multipleUpload.fields([
 ]);
 
 exports.getAllPets = async (req, res, next) => {
-  console.log('getAllPets')
+  console.log("getAllPets");
   await req.user.populate("pets").execPopulate();
   const pets = req.user.pets;
   res.status(200).json({
@@ -58,7 +58,7 @@ exports.getSinglePet = async (req, res, next) => {
 };
 
 exports.createPet = async (req, res, next) => {
-  console.log('create pet called', req);
+  console.log("create pet called", req);
 
   if (!req.files.photo) {
     return next(new AppError("Please select an image", 400));
@@ -70,7 +70,7 @@ exports.createPet = async (req, res, next) => {
   // }
 
   if (req.files.photo) {
-    console.log('photo', req.files.photo[0])
+    console.log("photo", req.files.photo[0]);
     values.push(req.files.photo[0]);
   }
 
@@ -90,7 +90,7 @@ exports.createPet = async (req, res, next) => {
   //   req.body.petHistoryImages = petImages;
   // }
   //req.body.photo = req.files.photo[0].url;
-  req.body.photo = 'localhost:8000/uploads/'+req.files.photo[0].filename;
+  req.body.photo = "localhost:8000/uploads/" + req.files.photo[0].filename;
   req.body.owner = req.user._id;
   const newPet = await Pet.create(req.body);
   res.status(201).json({
@@ -110,7 +110,7 @@ exports.updatePet = async (req, res, next) => {
       );
     }
     // req.body.photo = req.files.photo[0].url;
-    req.body.photo = 'localhost:8000/uploads/'+req.files.photo[0].filename;
+    req.body.photo = "localhost:8000/uploads/" + req.files.photo[0].filename;
   }
 
   const existingPet = await Pet.findByIdAndUpdate(req.params.id, req.body, {
@@ -129,7 +129,7 @@ exports.updatePet = async (req, res, next) => {
 };
 
 exports.petProblems = async (req, res, next) => {
-  console.log('petProblems', req.body);
+  console.log("petProblems", req.body);
   if (req.files.images) {
     let values = Object.values(req.files.images);
     for (let i = 0; i < values.length; i++) {

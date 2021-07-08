@@ -1,4 +1,4 @@
-const router = require('express').Router()
+const router = require("express").Router();
 
 const {
   uploadImage,
@@ -15,38 +15,38 @@ const {
   getPushToken,
   userBlock,
   updateDoctorHosp,
-} = require('../controllers/userCtrl')
+} = require("../controllers/userCtrl");
 
-const { protect, authorize } = require('../middleware/protect')
+const { protect, authorize } = require("../middleware/protect");
 
-router.get('/', protect, authorize('admin'), getAllUsers)
-router.patch('/me', protect, getMe)
+router.get("/", protect, authorize("admin"), getAllUsers);
+router.patch("/me", protect, getMe);
 router.get(
-  '/doctors/:doctorId',
+  "/doctors/:doctorId",
   protect,
-  authorize('doctor'),
+  authorize("doctor"),
   getUsersByDoctorId
-)
+);
 
-router.patch('/updateVet', protect, saveVet)
+router.patch("/updateVet", protect, saveVet);
 router.patch(
-  '/updateDoctorHosp',
+  "/updateDoctorHosp",
   protect,
-  authorize('doctor'),
+  authorize("doctor"),
   uploadImage,
   updateDoctorHosp
-)
-router.patch('/userOffline/:id', userOffline)
+);
+router.patch("/userOffline/:id", userOffline);
 
-router.patch('/block/:id', protect, authorize('admin'), userBlock)
+router.patch("/block/:id", protect, authorize("admin"), userBlock);
 
-router.patch('/saveToken', protect, savePushToken)
-router.get('/getPushToken/:id', protect, getPushToken)
-router.post('/sendNotification', protect, sendPushNotification)
+router.patch("/saveToken", protect, savePushToken);
+router.get("/getPushToken/:id", protect, getPushToken);
+router.post("/sendNotification", protect, sendPushNotification);
 
-router.post('/paydoctor', protect, authorize('user'), payDoctor)
-router.post('/verifyPayment', protect, authorize('user'), verifyPayment)
+router.post("/paydoctor", protect, authorize("user"), payDoctor);
+router.post("/verifyPayment", protect, authorize("user"), verifyPayment);
 
-router.post('/getToken', protect, getVideoToken)
+router.post("/getToken", protect, getVideoToken);
 
-module.exports = router
+module.exports = router;
