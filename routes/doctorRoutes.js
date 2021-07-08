@@ -1,8 +1,8 @@
-// const router = require('express').Router({ mergeParams: true })
 const router = require("express").Router();
 
 const {
   saveDoctorDetail,
+  updateDoctorDetail,
   uploadPdfFile,
   getAllDoctors,
   getSingleDoctor,
@@ -18,6 +18,8 @@ router.use(protect);
 router.route("/").get(getAllDoctors);
 
 router.post("/", authorize("doctor"), uploadPdfFile, saveDoctorDetail);
+
+router.patch("/:id", authorize("doctor"), uploadPdfFile, updateDoctorDetail);
 
 router.route("/:id").get(getSingleDoctor);
 
