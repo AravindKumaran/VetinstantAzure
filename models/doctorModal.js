@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
 
 const doctorSchema = new mongoose.Schema(
   {
@@ -14,26 +14,26 @@ const doctorSchema = new mongoose.Schema(
     },
     file: {
       type: String,
-      required: [true, 'Please add a form file'],
+      required: [true, "Please add a form file"],
     },
     accno: {
       type: String,
-      minlength: [9, 'Invalid account no.'],
-      required: false
+      minlength: [9, "Invalid account no."],
+      required: false,
     },
     accname: {
       type: String,
     },
     acctype: {
-      type: 'String',
+      type: "String",
       enum: {
-        values: ['savings', 'current'],
-        message: 'Account type must be either savings or current',
+        values: ["savings", "current"],
+        message: "Account type must be either savings or current",
       },
     },
     ifsc: {
       type: String,
-      minlength: [11, 'Invalid IFSC code'],
+      minlength: [11, "Invalid IFSC code"],
     },
     fee: {
       type: String,
@@ -55,8 +55,8 @@ const doctorSchema = new mongoose.Schema(
       type: String,
       // required: [true, 'Please enter your Qualifications'],
       enum: {
-        values: ['BVSc', 'BVSc& AH', 'MVSc', 'PhD'],
-        message: 'Please provide appropriate qualification',
+        values: ["BVSc", "BVSc& AH", "MVSc", "PhD"],
+        message: "Please provide appropriate qualification",
       },
     },
     regNo: {
@@ -73,23 +73,24 @@ const doctorSchema = new mongoose.Schema(
           type: String,
           // required: [true, 'Please add your pet problem'],
         },
-        petname: { type: String, 
-          // required: [true, 'Please add your pet name'] 
+        petname: {
+          type: String,
+          // required: [true, 'Please add your pet name']
         },
       },
     ],
     user: {
       type: mongoose.Schema.ObjectId,
-      ref: 'User',
+      ref: "User",
       // required: [true, 'Please add user'],
     },
     hospital: {
       type: mongoose.Schema.ObjectId,
-      ref: 'Hospital',
-      required: [true, 'Please add your hospital'],
+      ref: "Hospital",
+      required: [true, "Please add your hospital"],
     },
   },
   { timestamps: true }
-)
+);
 
-module.exports = mongoose.model('Doctor', doctorSchema)
+module.exports = mongoose.model("Doctor", doctorSchema);

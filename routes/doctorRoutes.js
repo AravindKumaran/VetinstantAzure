@@ -1,5 +1,4 @@
-// const router = require('express').Router({ mergeParams: true })
-const router = require('express').Router()
+const router = require("express").Router();
 
 const {
   saveDoctorDetail,
@@ -10,24 +9,24 @@ const {
   getOnlineAvailableDoctors,
   getDoctorDetail,
   savePatientDetails,
-} = require('../controllers/doctorCtrl')
+} = require("../controllers/doctorCtrl");
 
-const { protect, authorize } = require('../middleware/protect')
+const { protect, authorize } = require("../middleware/protect");
 
-router.use(protect)
+router.use(protect);
 
-router.route('/').get(authorize('admin'), getAllDoctors)
- 
-router.post('/', authorize('doctor'), uploadPdfFile, saveDoctorDetail)
+router.route("/").get(getAllDoctors);
 
-router.patch('/:id', authorize('doctor'), uploadPdfFile, updateDoctorDetail)
+router.post("/", authorize("doctor"), uploadPdfFile, saveDoctorDetail);
 
-router.route('/:id').get(getSingleDoctor)
+router.patch("/:id", authorize("doctor"), uploadPdfFile, updateDoctorDetail);
 
-router.patch('/savepatient/:id', savePatientDetails)
+router.route("/:id").get(getSingleDoctor);
 
-router.route('/user/:id').get(authorize('doctor'), getDoctorDetail)
+router.patch("/savepatient/:id", savePatientDetails);
 
-router.route('/online/available').get(getOnlineAvailableDoctors)
+router.route("/user/:id").get(authorize("doctor"), getDoctorDetail);
 
-module.exports = router
+router.route("/online/available").get(getOnlineAvailableDoctors);
+
+module.exports = router;
