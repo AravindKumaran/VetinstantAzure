@@ -26,7 +26,7 @@ mongoose
     useCreateIndex: true,
     useFindAndModify: false,
   })
-  .then((con) => console.log(`Database Connected at ${con.connection.host}`))
+  .then(( ) => console.log(`Database Connected at ${con.connection.host}`))
   .catch((err) => console.log(err))
 
 // mongoose.connect(process.env.MONGO_URL, {
@@ -61,6 +61,7 @@ const io = socketio(server).sockets
 const onlineUsers = []
 const listOfUsers = []
 io.on('connection', function (socket) {
+  
   socket.on('online', (data) => {
     if (!onlineUsers.includes(data)) {
       onlineUsers.push(data)
@@ -76,6 +77,7 @@ io.on('connection', function (socket) {
 
   socket.on('chat', (data) => {
     const { room, msg } = data
+    console.log('socket msg', msg);
     io.to(room).emit('chat', msg)
   })
 

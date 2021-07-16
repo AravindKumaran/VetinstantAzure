@@ -15,18 +15,22 @@ const {
   getPushToken,
   userBlock,
   updateDoctorHosp,
+  updateMe,
+  checkRegister
 } = require('../controllers/userCtrl')
 
 const { protect, authorize } = require('../middleware/protect')
 
 router.get('/', protect, authorize('admin'), getAllUsers)
 router.patch('/me', protect, getMe)
+router.patch('/me', protect, updateMe)
 router.get(
   '/doctors/:doctorId',
   protect,
   authorize('doctor'),
   getUsersByDoctorId
 )
+
 
 router.patch('/updateVet', protect, saveVet)
 router.patch(
@@ -39,6 +43,7 @@ router.patch(
 router.patch('/userOffline/:id', userOffline)
 
 router.patch('/block/:id', protect, authorize('admin'), userBlock)
+router.get('/register/check', protect, checkRegister)
 
 router.patch('/saveToken', protect, savePushToken)
 router.get('/getPushToken/:id', protect, getPushToken)

@@ -72,6 +72,8 @@ exports.getAllDoctors = async (req, res, next) => {
     },
   ])
 
+  console.log('doctors', doctors)
+
   res.status(200).json({
     status: 'success',
     count: doctors.length,
@@ -102,7 +104,7 @@ exports.getSingleDoctor = async (req, res, next) => {
 exports.getDoctorDetail = async (req, res, next) => {
   const doctor = await Doctor.findOne({ user: req.user._id }).populate({
     path: 'hospital',
-    select: 'name',
+    select: 'name address contact',
   })
 
   if (!doctor) {
@@ -209,7 +211,7 @@ exports.getOnlineAvailableDoctors = async (req, res, next) => {
     },
     {
       path: 'hospital',
-      select: 'name',
+      select: 'name address contact',
     },
   ])
 

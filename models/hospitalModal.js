@@ -16,6 +16,15 @@ const hospitalSchema = new mongoose.Schema(
     address: {
       type: String,
       required: [true, 'Please add hospital/clinic address']
+    },
+    contact: {
+      type: String,
+      // validate: {
+      //   validator: function (v) {
+      //     return v.length === 10 && /^[6-9]\d{9}$/g.test(v)
+      //   },
+      //   message: 'Please add a valid phone number',
+      // },
     }
   },
   { timestamps: true }

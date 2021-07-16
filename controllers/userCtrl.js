@@ -1,6 +1,8 @@
-const multer = require('multer')
+const multer = require('multer');
+const randomstring = require("randomstring");
 const User = require('../models/userModel')
 const AppError = require('../utils/AppError')
+const sendEmail = require('../utils/sendEmail')
 const Razorpay = require('razorpay')
 const { nanoid } = require('nanoid')
 const crypto = require('crypto')
@@ -79,6 +81,22 @@ exports.getMe = async (req, res, next) => {
   })
 }
 
+exports.updateMe = async (req, res, next) => {
+  // console.log('Req', req.user)
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    req.body,
+    { new: true }
+  )
+    
+  if(!user) return;
+
+  res.status(200).json({
+    status: 'success',
+    user
+  })
+}
+
 exports.userBlock = async (req, res, next) => {
   const user = await User.findById(req.params.id)
 
@@ -88,11 +106,44 @@ exports.userBlock = async (req, res, next) => {
 
   user.block = !user.block
 
-  await user.save()
+  const userSaved = await user.save();
+
+  //send otp to users mail
+  if(!userSaved.block) {
+    const otp = randomstring.generate({ length: 4, charset: 'numeric' });
+    userSaved.otp = otp;
+    await userSaved.save();
+    
+    let options = {
+      // to: userSaved.emailID,
+      to: 'mdmn2896@gmail.com',
+      subject: 'OTP',
+      text: otp
+    }
+    await sendEmail(options);
+  }
 
   return res.status(200).json({
     status: 'success',
   })
+}
+
+exports.checkRegister = async(req, res, next) => {
+  try {
+    const user = await User.findById(req.user._id)
+
+    if (!user) {
+      return next(new AppError('User not found', 404))
+    }
+
+    return res.status(200).json({
+      status: 'success',
+      isRegistered: user.isRegistered,
+      isVerified: user.isVerified
+    })
+  } catch(e) {
+    console.log(e)
+  }
 }
 
 exports.userOffline = async (req, res, next) => {
@@ -140,33 +191,22 @@ exports.updateDoctorHosp = async (req, res, next) => {
   // if (reqUser) {
   //   req.user = reqUser
   // }
-  let updateUser = {
-    hospitalId
-  }
-
-  if(name) {
-    updateUser.name = name;
-  }
 
   //add profile image
   if(req.file) {
-    updateUser.profile_image = req.file.path.replace('\\', '/');
+    req.body.profile_image = req.file.path.replace('\\', '/');
   }
 
-  if (hospitalId && req.user.role === 'doctor') {
+  if (req.user.role === 'doctor') {
     const user = await User.findByIdAndUpdate(
       req.user.id,
-      updateUser,
+      req.body,
       { new: true }
     )
+    console.log('response', user)
     res.status(200).json({
       status: 'success',
       user,
-    })
-  } else {
-    res.status(200).json({
-      status: 'success',
-      msg: req.body
     })
   }
 }

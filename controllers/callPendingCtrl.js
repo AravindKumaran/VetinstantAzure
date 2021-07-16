@@ -45,6 +45,14 @@ exports.getCallPendingByDoctor = async (req, res, next) => {
   const pendingCall = await CallPending.find({
     docId: req.params.userId,
   })
+  .populate({
+    path: 'docId',
+    ref: 'User'
+  })
+  .populate({
+    path: 'userId',
+    ref: 'User'
+  })
 
   res.status(200).json({
     status: 'success',
@@ -63,9 +71,21 @@ exports.updateCallPending = async (req, res, next) => {
     return next(new AppError('Pending call not found!!', 404))
   }
 
+  const pendingCallUpdated = await CallPending.find({
+    docId: req.params.userId,
+  })
+  .populate({
+    path: 'docId',
+    ref: 'User'
+  })
+  .populate({
+    path: 'userId',
+    ref: 'User'
+  })
+
   res.status(200).json({
     status: 'success',
-    calls: pendingCall,
+    calls: pendingCallUpdated,
   })
 }
 

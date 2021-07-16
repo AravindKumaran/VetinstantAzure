@@ -11,6 +11,7 @@ exports.createRoom = async (req, res, next) => {
       exRoom.petId = petId
       await exRoom.save()
     }
+    console.log('exRoom', exRoom);
     return res.status(200).json({ status: 'success', room: exRoom })
   }
 
