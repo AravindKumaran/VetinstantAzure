@@ -89,3 +89,43 @@ exports.saveHospitalName = async (req, res, next) => {
     newHospital,
   })
 }
+
+exports.updateHospital = async (req, res, next) => {
+  console.log(req.body)
+  try {
+    const exHospital = await Hospital.findOne({ _id: req.params.id })
+
+    if (!exHospital) {
+      return next(new AppError('Hospital does not exists!', 404))
+    }
+
+    //check for duplicate names
+    const hospitalName = await Hospital.find(
+      { 
+        name: req.body.name,
+        _id: { $ne: exHospital._id } 
+      }
+    )
+
+    if (hospitalName.length > 0) {
+      return next(new AppError('Hospital name already exists!', 404))
+    }
+
+    const hospital = await Hospital.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    )
+
+    console.log('response', hospital)
+
+    res.status(200).json({
+      status: 'success',
+      hospital,
+    })
+  } catch(e) {
+    console.log(e)
+  }
+}
+
+

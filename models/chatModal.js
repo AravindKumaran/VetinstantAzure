@@ -22,6 +22,10 @@ const chatSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Please enter pet id'],
     },
+    isDoctorMsg: {
+      type: Boolean,
+      default: false
+    },
     chatFiles: [{}]
   },
   { timestamps: true }

@@ -244,3 +244,25 @@ exports.resetPasswordVerifyCode = async (req, res, next) => {
     msg: 'Password Reset Success',
   })
 }
+
+exports.verifyOtp = async (req, res, next) => {
+  const user = await User.findOneAndUpdate({
+    _id: req.user._id,
+    otp: req.body.otp
+  },
+  {
+    $set: { isVerified: true }  
+  },
+  { new: true }
+  )
+  if(!user) {
+    return res.status(404).json({
+      status: 'failed',
+      msg: 'Invalid OTP!'
+    })
+  }
+  return res.status(200).json({
+    status: 'success',
+    msg: 'OTP Verified'
+  })
+}

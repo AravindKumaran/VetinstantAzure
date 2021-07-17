@@ -7,6 +7,7 @@ const {
 const {
   getAllHospitals,
   saveHospitalName,
+  updateHospital,
   getSingleHospital,
   hospitalBlock,
 } = require("../controllers/hospitalCtrl");
@@ -15,7 +16,9 @@ const { protect, authorize } = require("../middleware/protect");
 
 // const doctorRouter = require('./doctorRoutes')
 
-router.route("/").get(getAllHospitals).post(protect, saveHospitalName);
+router.route('/').get(getAllHospitals).post(protect, saveHospitalName)
+router.patch('/:id', protect, updateHospital);
+router.use(protect)
 
 router.use(protect);
 router.use("/:hospitalId/doctors", getHospitalDoctors);

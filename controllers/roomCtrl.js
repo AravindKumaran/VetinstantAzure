@@ -11,6 +11,7 @@ exports.createRoom = async (req, res, next) => {
       exRoom.petId = petId
       await exRoom.save()
     }
+    console.log('exRoom', exRoom);
     return res.status(200).json({ status: 'success', room: exRoom })
   }
 
@@ -23,8 +24,9 @@ exports.createRoom = async (req, res, next) => {
 }
 
 exports.getReceiverRoom = async (req, res, next) => {
-  const room = await Room.find({ receiverId: req.params.id })
-
+  //const room = await Room.find({ receiverId: req.params.id })
+  const room = await Room.find({ name: req.params.name })
+  console.log('room', room)
   res.status(200).json({
     status: 'success',
     room,

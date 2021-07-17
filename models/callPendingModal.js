@@ -13,10 +13,12 @@ const callPendingSchema = new mongoose.Schema(
     docId: {
       type: mongoose.Schema.ObjectId,
       required: [true, 'Please provide doctor id'],
+      ref: 'User'
     },
     hospId: {
       type: mongoose.Schema.ObjectId,
       required: [true, 'Please provide hospital id'],
+      ref: 'Hospital'
     },
     docFee: {
       type: Number,
@@ -40,6 +42,7 @@ const callPendingSchema = new mongoose.Schema(
     userId: {
       type: mongoose.Schema.ObjectId,
       required: [true, 'Please provide userid'],
+      ref: 'User'
     },
     petId: {
       type: mongoose.Schema.ObjectId,
@@ -74,6 +77,10 @@ const callPendingSchema = new mongoose.Schema(
     deleteAfter: {
       type: Date,
     },
+    isTimerStarted: {
+      type: Boolean,
+      default: false
+    }
   },
   { timestamps: true }
 )

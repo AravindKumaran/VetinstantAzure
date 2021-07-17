@@ -104,6 +104,8 @@ exports.getAllDoctors = async (req, res, next) => {
     },
   ]);
 
+  console.log('doctors', doctors)
+
   res.status(200).json({
     status: "success",
     count: doctors.length,
@@ -133,9 +135,9 @@ exports.getSingleDoctor = async (req, res, next) => {
 
 exports.getDoctorDetail = async (req, res, next) => {
   const doctor = await Doctor.findOne({ user: req.user._id }).populate({
-    path: "hospital",
-    select: "name",
-  });
+    path: 'hospital',
+    select: 'name address contact',
+  })
 
   if (!doctor) {
     return next(
@@ -239,8 +241,8 @@ exports.getOnlineAvailableDoctors = async (req, res, next) => {
       select: "_id name block emailID profile_image isOnline token",
     },
     {
-      path: "hospital",
-      select: "name",
+      path: 'hospital',
+      select: 'name address contact',
     },
   ]);
   const onlineDoctor = doctors.filter((doc) => doc.user);

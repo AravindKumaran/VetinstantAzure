@@ -26,8 +26,8 @@ mongoose
     useCreateIndex: true,
     useFindAndModify: false,
   })
-  .then((con) => console.log(`Database Connected at ${con.connection.host}`))
-  .catch((err) => console.log(err));
+  .then(( ) => console.log(`Database Connected at ${con.connection.host}`))
+  .catch((err) => console.log(err))
 
 // mongoose.connect(process.env.MONGO_URL, {
 //   useNewUrlParser: true,
@@ -65,8 +65,8 @@ io.on("connection", function (socket) {
     if (!onlineUsers.includes(data)) {
       onlineUsers.push(data);
       listOfUsers.push({ data, id: socket.id });
-      console.log("Online", onlineUsers);
-      console.log("List Online", listOfUsers);
+      console.log("Online", onlineUsers.length);
+      console.log("List Online", listOfUsers.length);
     }
   });
 
@@ -76,6 +76,7 @@ io.on("connection", function (socket) {
 
   socket.on("chat", (data) => {
     const { room, msg } = data;
+    console.log('msg', msg)
     io.to(room).emit("chat", msg);
   });
 
