@@ -1,4 +1,4 @@
-const router = require('express').Router()
+const router = require("express").Router();
 
 const {
   getAllPets,
@@ -9,25 +9,20 @@ const {
   petProblems,
   petPrescription,
   uploadMultiplePhoto,
-} = require('../controllers/petCtrl')
+} = require("../controllers/petCtrl");
 
-const { protect, authorize } = require('../middleware/protect')
+const { protect, authorize } = require("../middleware/protect");
 
-router.use(protect)
+router.use(protect);
 
-router.patch(
-  '/prescription/:id',
-  authorize('doctor'),
-  uploadPetPhoto,
-  petPrescription
-)
+router.patch("/prescription/:id", uploadPetPhoto, petPrescription);
 
 // router.use(authorize('user'))
 
-router.route('/').get(getAllPets).post(uploadMultiplePhoto, createPet)
+router.route("/").get(getAllPets).post(uploadMultiplePhoto, createPet);
 
-router.patch('/problems/:id', uploadMultiplePhoto, petProblems)
+router.patch("/problems/:id", uploadMultiplePhoto, petProblems);
 
-router.route('/:id').get(getSinglePet).patch(uploadMultiplePhoto, updatePet)
+router.route("/:id").get(getSinglePet).patch(uploadMultiplePhoto, updatePet);
 
-module.exports = router
+module.exports = router;

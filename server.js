@@ -121,6 +121,7 @@ if (process.env.NODE_ENV === "development") {
 // app.use(morgan('combined', { stream: logs }))
 
 app.use(express.static(path.join(__dirname, "public/uploads")));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Mounting routes
 
@@ -134,6 +135,7 @@ app.use("/api/v1/chats", require("./routes/chatRoutes"));
 app.use("/api/v1/calllogs", require("./routes/callLogRoutes"));
 app.use("/api/v1/scheduledCalls", require("./routes/scheduledCallRoutes"));
 app.use("/api/v1/pendingcalls", require("./routes/callPendingRoutes"));
+app.use("/api/v1/medicalHistory", require("./routes/medicalHistoryRoutes"));
 
 app.use(errorMid);
 

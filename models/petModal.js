@@ -33,11 +33,11 @@ const petSchema = new mongoose.Schema(
     dob: {
       type: Date,
       default: new Date(),
-      required: [true, "Please enter the Date of birth"]
+      required: [true, "Please enter the Date of birth"],
     },
     description: {
       type: String,
-      required: [true, "Please enter the description"]
+      required: [true, "Please enter the description"],
     },
     problems: [
       {

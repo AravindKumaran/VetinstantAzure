@@ -16,17 +16,31 @@ const multerFilter2 = (req, file, cb) => {
   }
 };
 
-const upload = multer({
-  // storage: azureMulterStorage,
-  dest: "public/uploads/",
-  fileFilter: multerFilter2,
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "public/uploads/");
+  },
+  filename: function (req, file, cb) {
+    console.log("file", file);
+    cb(null, file.originalname + "_" + Date.now());
+  },
 });
+var upload = multer({ storage: storage, multerFilter2 });
+
+// const upload = multer({
+//   // storage: azureMulterStorage,
+//   dest: "public/uploads/",
+//   fileFilter: multerFilter2,
+// });
 exports.uploadPetPhoto = upload.single("photo");
 
 const multipleUpload = multer({
   //storage: azureMulterStorage,
   dest: "public/uploads/",
 });
+// const multipleUpload = multer({
+//   storage: storage,
+// });
 
 exports.uploadMultiplePhoto = multipleUpload.fields([
   { name: "photo", maxCount: 1 },
@@ -189,6 +203,8 @@ exports.petProblems = async (req, res, next) => {
   });
 };
 exports.petPrescription = async (req, res, next) => {
+  console.log("body", req.body);
+  console.log("file", req.file);
   if (req.file && req.file.size > 1000000) {
     return next(
       new AppError(
@@ -197,8 +213,13 @@ exports.petPrescription = async (req, res, next) => {
       )
     );
   }
+
   if (req.file) {
-    req.body.img = req.file.url;
+    req.body.img =
+      "localhost:8000/" +
+      req.file.filename +
+      "." +
+      req.file.mimetype.split("/")[1];
   }
   const bodyPrescription = {
     prescription: req.body.prescription,
