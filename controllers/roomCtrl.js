@@ -24,8 +24,9 @@ exports.createRoom = async (req, res, next) => {
 }
 
 exports.getReceiverRoom = async (req, res, next) => {
-  const room = await Room.find({ receiverId: req.params.id })
-
+  //const room = await Room.find({ receiverId: req.params.id })
+  const room = await Room.find({ name: req.params.name })
+  console.log('room', room)
   res.status(200).json({
     status: 'success',
     room,
