@@ -69,7 +69,7 @@ io.on("connection", function (socket) {
       console.log("List Online", listOfUsers.length);
     }
   });
-
+  console.log(`${listOfUsers.length} users connected`);
   socket.on("room", (room) => {
     socket.join(room);
   });
@@ -77,10 +77,13 @@ io.on("connection", function (socket) {
   socket.on("chat", (data) => {
     const { room, msg } = data;
     console.log('msg', msg)
+    console.log('room', room)
+    console.log('msg', msg)
     io.to(room).emit("chat", msg);
   });
 
   socket.on("videoCall", (data) => {
+    console.log('data', data)
     io.emit("videoCall", data);
   });
 
