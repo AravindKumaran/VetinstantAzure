@@ -78,7 +78,6 @@ io.on("connection", function (socket) {
     const { room, msg } = data;
     console.log('msg', msg)
     console.log('room', room)
-    console.log('msg', msg)
     io.to(room).emit("chat", msg);
   });
 
@@ -149,7 +148,7 @@ app.get("/", (req, res) => {
 
 const PORT = process.env.PORT || 8000;
 
-server.listen(PORT, "192.168.1.46", () =>
+server.listen(PORT, () =>
   console.log(`Server is running on port ${PORT}`)
 );
 
