@@ -1,7 +1,7 @@
 const Doctor = require("../models/doctorModal");
 const multer = require("multer");
 const AppError = require("../utils/AppError");
-const MulterAzureStorage = require("multer-azure-storage");
+// const MulterAzureStorage = require("multer-azure-storage");
 
 // const azureMulterStorage = new MulterAzureStorage({
 //   azureStorageConnectionString: process.env.AZURE_CONN_STRING,
