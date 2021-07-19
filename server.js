@@ -62,6 +62,7 @@ const onlineUsers = [];
 const listOfUsers = [];
 io.on("connection", function (socket) {
   socket.on("online", (data) => {
+    console.log('online data', data)
     if (!onlineUsers.includes(data)) {
       onlineUsers.push(data);
       listOfUsers.push({ data, id: socket.id });
