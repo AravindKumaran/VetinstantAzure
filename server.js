@@ -26,7 +26,7 @@ mongoose
     useCreateIndex: true,
     useFindAndModify: false,
   })
-  .then(( ) => console.log(`Database Connected at ${con.connection.host}`))
+  .then((con ) => console.log(`Database Connected at ${con.connection.host}`))
   .catch((err) => console.log(err))
 
 // mongoose.connect(process.env.MONGO_URL, {
