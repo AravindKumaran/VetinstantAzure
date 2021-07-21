@@ -26,8 +26,13 @@ mongoose
     useCreateIndex: true,
     useFindAndModify: false,
   })
+<<<<<<< HEAD
   .then(() => console.log(`Database Connected at`))
   .catch((err) => console.log(err));
+=======
+  .then((con ) => console.log(`Database Connected at ${con.connection.host}`))
+  .catch((err) => console.log(err))
+>>>>>>> b4ef756a5cf8ef30c0b6e8ff64491aa1bac21818
 
 // mongoose.connect(process.env.MONGO_URL, {
 //   useNewUrlParser: true,
@@ -62,6 +67,7 @@ const onlineUsers = [];
 const listOfUsers = [];
 io.on("connection", function (socket) {
   socket.on("online", (data) => {
+    console.log('online data', data)
     if (!onlineUsers.includes(data)) {
       onlineUsers.push(data);
       listOfUsers.push({ data, id: socket.id });
@@ -69,18 +75,25 @@ io.on("connection", function (socket) {
       console.log("List Online", listOfUsers.length);
     }
   });
-
+  
   socket.on("room", (room) => {
     socket.join(room);
   });
 
   socket.on("chat", (data) => {
     const { room, msg } = data;
+<<<<<<< HEAD
     console.log("msg", msg);
+=======
+    console.log('msg', msg)
+    console.log('room', room)
+    console.log(`${listOfUsers.length} users connected`);
+>>>>>>> b4ef756a5cf8ef30c0b6e8ff64491aa1bac21818
     io.to(room).emit("chat", msg);
   });
 
   socket.on("videoCall", (data) => {
+    console.log('data', data)
     io.emit("videoCall", data);
   });
 
@@ -122,7 +135,7 @@ if (process.env.NODE_ENV === "development") {
 // app.use(morgan('combined', { stream: logs }))
 
 app.use(express.static(path.join(__dirname, "public/uploads")));
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/public", express.static(path.join(__dirname, "public/uploads")));
 
 // Mounting routes
 
@@ -146,8 +159,8 @@ app.get("/", (req, res) => {
 
 const PORT = process.env.PORT || 8000;
 
-server.listen(PORT, "192.168.1.46", () =>
-  console.log(`Server is running on port ${PORT}`)
-);
+// server.listen(PORT, () =>
+//   console.log(`Server is running on port ${PORT}`)
+// );
 
 server.listen(PORT, () => console.log(`Server is running on port ${PORT}`));

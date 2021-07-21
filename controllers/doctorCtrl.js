@@ -1,16 +1,16 @@
 const Doctor = require("../models/doctorModal");
 const multer = require("multer");
 const AppError = require("../utils/AppError");
-const MulterAzureStorage = require("multer-azure-storage");
+// const MulterAzureStorage = require("multer-azure-storage");
 
-const azureMulterStorage = new MulterAzureStorage({
-  azureStorageConnectionString: process.env.AZURE_CONN_STRING,
-  azureStorageAccount: process.env.AZURE_STR_ACC,
-  azureStorageAccessKey: process.env.AZURE_STR_ACC_KEY,
-  containerName: "documents",
-  containerSecurity: "blob",
-  // fileName: (file) => `1.png`,
-});
+// const azureMulterStorage = new MulterAzureStorage({
+//   azureStorageConnectionString: process.env.AZURE_CONN_STRING,
+//   azureStorageAccount: process.env.AZURE_STR_ACC,
+//   azureStorageAccessKey: process.env.AZURE_STR_ACC_KEY,
+//   containerName: "documents",
+//   containerSecurity: "blob",
+//   // fileName: (file) => `1.png`,
+// });
 
 const multerFilter = (req, file, cb) => {
   if (file.mimetype === "application/pdf") {
