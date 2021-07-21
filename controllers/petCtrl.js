@@ -205,7 +205,7 @@ exports.petProblems = async (req, res, next) => {
 exports.petPrescription = async (req, res, next) => {
   console.log("body", req.body);
   console.log("file", req.file);
-  if (req.file && req.file.size > 1000000) {
+  if (req.file) {
     return next(
       new AppError(
         "Please select a file of image file of size less than 1Mb",
@@ -215,11 +215,7 @@ exports.petPrescription = async (req, res, next) => {
   }
 
   if (req.file) {
-    req.body.img =
-      "localhost:8000/" +
-      req.file.filename +
-      "." +
-      req.file.mimetype.split("/")[1];
+    req.body.img = req.file.filename + "." + req.file.mimetype.split("/")[1];
   }
   const bodyPrescription = {
     prescription: req.body.prescription,

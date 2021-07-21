@@ -26,8 +26,8 @@ mongoose
     useCreateIndex: true,
     useFindAndModify: false,
   })
-  .then(( ) => console.log(`Database Connected at ${con.connection.host}`))
-  .catch((err) => console.log(err))
+  .then(() => console.log(`Database Connected at`))
+  .catch((err) => console.log(err));
 
 // mongoose.connect(process.env.MONGO_URL, {
 //   useNewUrlParser: true,
@@ -76,7 +76,7 @@ io.on("connection", function (socket) {
 
   socket.on("chat", (data) => {
     const { room, msg } = data;
-    console.log('msg', msg)
+    console.log("msg", msg);
     io.to(room).emit("chat", msg);
   });
 
